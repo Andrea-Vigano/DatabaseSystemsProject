@@ -1,80 +1,74 @@
 package commandparser;
 
-import repositories.PIRRepository;
+import controller.MainController;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 
 public class CommandParser {
-    final private PIRRepository<?>[] repositories;
+    final private MainController controller;
     final private Scanner scanner;
     final private PrintStream printStream;
-    public CommandParser(PIRRepository<?>[] repositories, Scanner scanner, PrintStream printStream) {
-        this.repositories = repositories;
+    public CommandParser(MainController controller, Scanner scanner, PrintStream printStream) {
+        this.controller = controller;
         this.scanner = scanner;
         this.printStream = printStream;
     }
 
     public void parse(Command command) {
-        if (command.isAdd()) {
-            performAdd(command);
-        } else if (command.isEdit()) {
-            performEdit(command);
-        } else if (command.isRm()) {
-            performRm(command);
-        } else if (command.isFind()) {
-            performFind(command);
+        if (command.isLogin()) {
+            performLogin();
+        } else if (command.isSignup()) {
+            performSignUp();
+        } else if (command.isLogout()) {
+            performLogOut();
+        } else if (command.isList()) {
+            this.wrapWithAuth(this::performList);
         } else if (command.isSearch()) {
-            performSearch(command);
+            this.wrapWithAuth(this::performSearch);
         }
     }
 
-    private void performAdd(Command command) {
-        int index = this.getRepositoryIndex(command);
-        Boolean result = repositories[index].createAndAdd();
-        if (result) this.printStream.println("Successfully added PIR");
-        else this.printStream.println("Failed to add PIR");
+    private void wrapWithAuth(Runnable function) {
+        if (!this.controller.isLogged()) printStream.println("User not logged in");
+        else function.run();
     }
 
-    private void performEdit(Command command) {
-        int index = this.getRepositoryIndex(command);
-        Boolean result = repositories[index].createAndEdit();
-        if (result) this.printStream.println("Successfully updated PIR");
-        else this.printStream.println("Failed to update PIR");
+    private void performLogin() {
+        printStream.print("Insert you username: ");
+        String username = scanner.nextLine();
+        printStream.print("Insert your password: ");
+        String password = scanner.nextLine();
+        boolean result = this.controller.logIn(username, password);
+        if (result) printStream.println("Successfully logged in");
+        else printStream.println("Unable to log in");
     }
 
-    private void performRm(Command command) {
-        this.printStream.println("Insert the id: ");
-        Integer id = this.scanner.nextInt();
-        this.scanner.nextLine();
-        int index = this.getRepositoryIndex(command);
-        Boolean result = repositories[index].remove(id);
-        if (result) this.printStream.println("Successfully removed pir with id: " + id);
-        else this.printStream.println("Unable to remove pir with id: " + id);
+    private void performSignUp() {
+        printStream.print("Insert you name: ");
+        String name = scanner.nextLine();
+        printStream.print("Insert you username: ");
+        String username = scanner.nextLine();
+        printStream.print("Insert your password: ");
+        String password = scanner.nextLine();
+        printStream.print("Insert you email: ");
+        String email = scanner.nextLine();
+        boolean result = this.controller.signUp(name, username, password, email);
+        if (result) printStream.println("Successfully signed up");
+        else printStream.println("Unable to sign up");
     }
 
-    private void performFind(Command command) {
-        this.printStream.println("Insert the id: ");
-        Integer id = this.scanner.nextInt();
-        this.scanner.nextLine();
-        int index = this.getRepositoryIndex(command);
-        Boolean result = repositories[index].findAndPrint(id);
-        if (!result) this.printStream.println("Unable to find plain text PIR with id: " + id);
+    private void performLogOut() {
+        boolean result = this.controller.logOut();
+        if (result) printStream.println("Successfully logged out");
+        else printStream.println("Unable to log out");
     }
 
-    private void performSearch(Command command) {
-        this.printStream.println("Type the search condition you wish to apply: ");
-        String condition = this.scanner.nextLine();
-        int index = this.getRepositoryIndex(command);
-        Boolean result = repositories[index].search(condition);
-        if (!result) this.printStream.println("Unable to parse condition: " + condition);
+    private void performList() {
+
     }
 
-    private int getRepositoryIndex(Command command) {
-        if (command.isPlainText()) return 0;
-        else if (command.isTask()) return 1;
-        else if (command.isEvent()) return 2;
-        else if (command.isContact()) return 3;
-        return -1;
+    private void performSearch() {
+
     }
 }

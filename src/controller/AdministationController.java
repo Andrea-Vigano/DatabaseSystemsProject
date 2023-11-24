@@ -1,2 +1,4 @@
-package controller;public class AdministationController {
+package controller;
+
+public class AdministationController implements Controller {
 }

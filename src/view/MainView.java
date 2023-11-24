@@ -1,2 +1,5 @@
-package view;public class MainView {
+package view;
+
+public class MainView {
+
 }

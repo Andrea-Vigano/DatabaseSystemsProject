@@ -1,2 +1,4 @@
-package controller;public class ProductsController {
+package controller;
+
+public class ProductsController implements Controller {
 }

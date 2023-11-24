@@ -3,10 +3,10 @@ package commandparser;
 import java.util.Objects;
 
 public enum COMMAND_TYPES {
-    ADD("add"),
-    EDIT("edit"),
-    RM("rm"),
-    FIND("find"),
+    LOGIN("login"),
+    SIGNUP("signup"),
+    LOGOUT("logout"),
+    LIST("list"),
     SEARCH("search"),
     EXIT("exit");
 

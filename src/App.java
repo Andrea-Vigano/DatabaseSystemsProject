@@ -1,17 +1,34 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
-public class Main {
-    public static void main(String[] args) {
-        // Press Opt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import commandparser.Command;
+import commandparser.CommandParser;
+import controller.MainController;
+import controller.database.Database;
+import controller.database.SQLManager;
+import io.IO;
 
-        // Press Ctrl+R or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+import java.io.PrintStream;
+import java.util.Scanner;
 
-            // Press Ctrl+D to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Cmd+F8.
-            System.out.println("i = " + i);
-        }
+public class App {
+    static private final Scanner scanner = IO.scanner;
+    static private final PrintStream printStream = IO.printStream;
+    private final CommandParser commandParser;
+
+    public App(MainController mainController) {
+        this.commandParser = new CommandParser(mainController, scanner, printStream);
+    }
+
+    static public void main(String[] args) {
+        MainController mainController = new MainController(printStream, Database.get(), new SQLManager());
+        App app = new App(mainController);
+        app.run();
+    }
+
+    public void run() {
+        Command currentCommand;
+        do {
+            String rawCommand = App.scanner.nextLine();
+            currentCommand = new Command(rawCommand);
+            commandParser.parse(currentCommand);
+        } while (!currentCommand.isExit());
     }
 }

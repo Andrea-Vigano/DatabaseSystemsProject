@@ -1,2 +1,4 @@
-package controller;public class ReportingController {
+package controller;
+
+public class ReportingController implements Controller {
 }
