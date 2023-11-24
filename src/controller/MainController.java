@@ -5,15 +5,14 @@ import controller.database.SQLManager;
 
 import java.io.PrintStream;
 
-public class MainController implements Controller {
-    private final Database database;
-    private final SQLManager sqlManager;
+public class MainController extends Controller {
     private final AuthenticationController authenticationController;
+    private final ProductsController productsController;
 
     public MainController(PrintStream printStream, Database database, SQLManager sqlManager) {
-        this.database = database;
-        this.sqlManager = sqlManager;
+        super(printStream, database, sqlManager);
         this.authenticationController = new AuthenticationController(printStream, database, sqlManager);
+        this.productsController = new ProductsController(printStream, database, sqlManager);
     }
 
     public boolean logIn(String username, String password) {
@@ -30,5 +29,13 @@ public class MainController implements Controller {
 
     public boolean isLogged() {
         return authenticationController.getIsLogged();
+    }
+
+    public boolean listProducts() {
+        return productsController.list();
+    }
+
+    public boolean searchProducts(String category, String brand, double lowestPrice, double highestPrice) {
+        return productsController.search(category, brand, lowestPrice, highestPrice);
     }
 }

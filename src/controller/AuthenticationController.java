@@ -7,16 +7,11 @@ import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AuthenticationController implements Controller {
-    private final Database database;
-    private final SQLManager sqlManager;
-    private final PrintStream printStream;
+public class AuthenticationController extends Controller {
     private boolean isLogged = false;
 
     public AuthenticationController(PrintStream printStream, Database database, SQLManager sqlManager) {
-        this.database = database;
-        this.sqlManager = sqlManager;
-        this.printStream = printStream;
+        super(printStream, database, sqlManager);
     }
     public boolean logIn(String username, String password) {
         String where = "username=" + username + " AND password=" + password;

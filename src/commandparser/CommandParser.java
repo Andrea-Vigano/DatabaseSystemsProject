@@ -3,6 +3,7 @@ package commandparser;
 import controller.MainController;
 
 import java.io.PrintStream;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class CommandParser {
@@ -65,10 +66,36 @@ public class CommandParser {
     }
 
     private void performList() {
-
+        boolean result = this.controller.listProducts();
+        if (result) printStream.println("Successfully listed products");
+        else printStream.println("Unable to list products");
     }
 
     private void performSearch() {
-
+        String category = "", brand = "";
+        double lowestPrice = 0.0, highestPrice = 0.0;
+        printStream.print("Do you want to search products by category [Y/N]? ");
+        String isCategory = scanner.next();
+        if (Objects.equals(isCategory, "Y")) {
+            printStream.println("Insert category: ");
+            category = scanner.nextLine();
+        }
+        printStream.print("Do you want to search products by brand [Y/N]? ");
+        String isBrand = scanner.next();
+        if (Objects.equals(isBrand, "Y")) {
+            printStream.println("Insert brand: ");
+            brand = scanner.nextLine();
+        }
+        printStream.print("Do you want to search products by priceRange [Y/N]? ");
+        String isPriceRange = scanner.next();
+        if (Objects.equals(isPriceRange, "Y")) {
+            printStream.println("Insert lowest price: ");
+            lowestPrice = Double.parseDouble(scanner.nextLine());
+            printStream.println("Insert highest price: ");
+            highestPrice = Double.parseDouble(scanner.nextLine());
+        }
+        boolean result = this.controller.searchProducts(category, brand, lowestPrice, highestPrice);
+        if (result) printStream.println("Successfully searched products");
+        else printStream.println("Unable to search products");
     }
 }
