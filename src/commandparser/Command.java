@@ -35,6 +35,14 @@ public class Command {
         return this.is(COMMAND_TYPES.SEARCH);
     }
 
+    public Boolean isAdminLogin() {
+        return this.is(COMMAND_TYPES.ADMIN_LOGIN);
+    }
+
+    public Boolean isAddProduct() {
+        return this.is(COMMAND_TYPES.ADD_PRODUCT);
+    }
+
     public Boolean isExit() {
         return this.is(COMMAND_TYPES.EXIT);
     }

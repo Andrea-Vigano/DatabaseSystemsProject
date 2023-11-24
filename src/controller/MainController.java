@@ -19,6 +19,10 @@ public class MainController extends Controller {
         return authenticationController.logIn(username, password);
     }
 
+    public boolean adminLogIn(String username, String password) {
+        return authenticationController.adminLogIn(username, password);
+    }
+
     public boolean signUp(String name, String username, String password, String email) {
         return authenticationController.singUp(name, username, password, email);
     }
@@ -31,11 +35,33 @@ public class MainController extends Controller {
         return authenticationController.getIsLogged();
     }
 
+    public boolean isAdmin() {
+        return authenticationController.getIsAdmin();
+    }
+
     public boolean listProducts() {
         return productsController.list();
     }
 
     public boolean searchProducts(String category, String brand, double lowestPrice, double highestPrice) {
         return productsController.search(category, brand, lowestPrice, highestPrice);
+    }
+
+    public boolean getCategoryId(String name) {
+        return productsController.getCategory(name);
+    }
+
+    public boolean addProduct(
+            String name,
+            String description,
+            String specification,
+            double price,
+            String brand,
+            String categoryId,
+            String warehouseId,
+            String supplierId,
+            String rating
+    ) {
+        return productsController.add(name, description, specification, price, brand, categoryId, warehouseId, supplierId, rating);
     }
 }

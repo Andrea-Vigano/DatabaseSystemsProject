@@ -8,6 +8,8 @@ public enum COMMAND_TYPES {
     LOGOUT("logout"),
     LIST("list"),
     SEARCH("search"),
+    ADMIN_LOGIN("admin-login"),
+    ADD_PRODUCT("add-product"),
     EXIT("exit");
 
     private final String value;

@@ -18,16 +18,27 @@ public class CommandParser {
 
     public void parse(Command command) {
         if (command.isLogin()) {
-            performLogin();
+            this.wrapWithLoginCheck(this::performLogin);
         } else if (command.isSignup()) {
-            performSignUp();
+            this.wrapWithLoginCheck(this::performSignUp);
         } else if (command.isLogout()) {
             performLogOut();
         } else if (command.isList()) {
             this.wrapWithAuth(this::performList);
         } else if (command.isSearch()) {
             this.wrapWithAuth(this::performSearch);
+        } else if (command.isAdminLogin()) {
+            this.wrapWithLoginCheck(this::performAdminLogin);
+        } else if (command.isAddProduct()) {
+            this.wrapWithAdminAuth(this::performAddProduct);
+        } else {
+            this.printStream.println("Unknown command");
         }
+    }
+
+    private void wrapWithLoginCheck(Runnable function) {
+        if (this.controller.isLogged()) printStream.println("User already logged in");
+        else function.run();
     }
 
     private void wrapWithAuth(Runnable function) {
@@ -35,8 +46,14 @@ public class CommandParser {
         else function.run();
     }
 
+    private void wrapWithAdminAuth(Runnable function) {
+        if (!this.controller.isLogged()) printStream.println("User not logged in");
+        else if (!this.controller.isAdmin()) printStream.println("User is not admin");
+        else function.run();
+    }
+
     private void performLogin() {
-        printStream.print("Insert you username: ");
+        printStream.print("Insert your username: ");
         String username = scanner.nextLine();
         printStream.print("Insert your password: ");
         String password = scanner.nextLine();
@@ -46,13 +63,13 @@ public class CommandParser {
     }
 
     private void performSignUp() {
-        printStream.print("Insert you name: ");
+        printStream.print("Insert your name: ");
         String name = scanner.nextLine();
-        printStream.print("Insert you username: ");
+        printStream.print("Insert your username: ");
         String username = scanner.nextLine();
         printStream.print("Insert your password: ");
         String password = scanner.nextLine();
-        printStream.print("Insert you email: ");
+        printStream.print("Insert your email: ");
         String email = scanner.nextLine();
         boolean result = this.controller.signUp(name, username, password, email);
         if (result) printStream.println("Successfully signed up");
@@ -75,27 +92,61 @@ public class CommandParser {
         String category = "", brand = "";
         double lowestPrice = 0.0, highestPrice = 0.0;
         printStream.print("Do you want to search products by category [Y/N]? ");
-        String isCategory = scanner.next();
-        if (Objects.equals(isCategory, "Y")) {
-            printStream.println("Insert category: ");
+        String isCategory = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isCategory, "y")) {
+            printStream.print("Insert category: ");
             category = scanner.nextLine();
         }
         printStream.print("Do you want to search products by brand [Y/N]? ");
-        String isBrand = scanner.next();
-        if (Objects.equals(isBrand, "Y")) {
-            printStream.println("Insert brand: ");
+        String isBrand = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isBrand, "y")) {
+            printStream.print("Insert brand: ");
             brand = scanner.nextLine();
         }
         printStream.print("Do you want to search products by priceRange [Y/N]? ");
-        String isPriceRange = scanner.next();
-        if (Objects.equals(isPriceRange, "Y")) {
-            printStream.println("Insert lowest price: ");
+        String isPriceRange = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isPriceRange, "y")) {
+            printStream.print("Insert lowest price: ");
             lowestPrice = Double.parseDouble(scanner.nextLine());
-            printStream.println("Insert highest price: ");
+            printStream.print("Insert highest price: ");
             highestPrice = Double.parseDouble(scanner.nextLine());
         }
         boolean result = this.controller.searchProducts(category, brand, lowestPrice, highestPrice);
         if (result) printStream.println("Successfully searched products");
         else printStream.println("Unable to search products");
+    }
+
+    private void performAdminLogin() {
+        printStream.print("Insert your username: ");
+        String username = scanner.nextLine();
+        printStream.print("Insert your password: ");
+        String password = scanner.nextLine();
+        boolean result = this.controller.adminLogIn(username, password);
+        if (result) printStream.println("Successfully logged in");
+        else printStream.println("Unable to log in");
+    }
+
+    private void performAddProduct() {
+        printStream.print("Insert product name: ");
+        String name = scanner.nextLine();
+        printStream.print("Insert product description: ");
+        String description = scanner.nextLine();
+        printStream.print("Insert product specifications: ");
+        String specifications = scanner.nextLine();
+        printStream.print("Insert product price: ");
+        double price = Double.parseDouble(scanner.nextLine());
+        printStream.print("Insert product brand: ");
+        String brand = scanner.nextLine();
+        printStream.print("Insert product category name: ");
+        String category = scanner.nextLine();
+        printStream.print("Insert product warehouse name: ");
+        String warehouse = scanner.nextLine();
+        printStream.print("Insert product supplier name: ");
+        String supplier = scanner.nextLine();
+        printStream.print("Insert product rating: ");
+        String rating = scanner.nextLine();
+        // change return type ...
+        boolean categoryId = this.controller.getCategoryId(category);
+        // ...
     }
 }

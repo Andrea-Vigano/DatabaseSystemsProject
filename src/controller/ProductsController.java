@@ -63,4 +63,40 @@ public class ProductsController extends Controller {
 //        }
         return true;
     }
+
+    public boolean add(
+            String name,
+            String description,
+            String specification,
+            double price,
+            String brand,
+            String categoryId,
+            String warehouseId,
+            String supplierId,
+            String rating
+    ) {
+        String statement = sqlManager.getInsertStatement(
+                "Product",
+                new String[] { "name", "description", "specification", "price", "brand", "category_id", "warehouse_id", "supplier_id", "rating" },
+                new String[] { name, description, specification, Objects.toString(price), brand, categoryId, warehouseId, supplierId, rating }
+        );
+        printStream.println(statement);
+//        try {
+//            ResultSet results = database.query(statement);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        return true;
+    }
+
+    public boolean getCategory(String name) {
+        String statement = sqlManager.getSelectStatement("Category", new String[] { "category_id" }, "name=" + name);
+        printStream.println(statement);
+//        try {
+//            ResultSet results = database.query(statement);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        return true;
+    }
 }
