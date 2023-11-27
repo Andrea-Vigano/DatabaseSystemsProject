@@ -4,6 +4,10 @@ import controller.database.Database;
 import controller.database.SQLManager;
 
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -16,8 +20,14 @@ public class AuthenticationController extends Controller {
     }
 
     public boolean logIn(String username, String password) {
-        String where = "username=" + username + " AND password=" + password;
-        String statement = sqlManager.getSelectStatement("User", where);
+        String passwordHash = AuthenticationController.sha256(password);
+        String where = "username=" + username
+                + " AND passwordHash=" + passwordHash
+                + "AND User.user_id=Password.user_id";
+        String statement = sqlManager.getSelectStatement(
+                new String[]{ "User", "Password" },
+                new String[]{ "User.user_id" },
+                where);
         printStream.println(statement);
 //        try {
 //            ResultSet results = database.query(statement);
@@ -68,5 +78,22 @@ public class AuthenticationController extends Controller {
         isLogged = false;
         isAdmin = false;
         return true;
+    }
+
+    private static String sha256(final String base) {
+        try{
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hash = digest.digest(base.getBytes(StandardCharsets.UTF_8));
+            final StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                final String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 }

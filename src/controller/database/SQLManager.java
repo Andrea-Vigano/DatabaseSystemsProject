@@ -54,4 +54,18 @@ public class SQLManager {
         statement.append(");");
         return statement.toString();
     }
+
+    public String getDeleteStatement(String table, String where) {
+        return "DELETE FROM " + table + " WHERE " + where + ";";
+    }
+
+    public String getUpdateStatement(String table, String[] columns, String[] fields, String where) {
+        StringBuilder statement = new StringBuilder("UPDATE ").append(table).append(" SET ");
+        for (int i = 0; i < columns.length || i < fields.length; i++) {
+            statement.append(columns[i]).append("=").append(fields[i]);
+            if (i != fields.length - 1 && i != columns.length - 1) statement.append(", ");
+        }
+        statement.append(" WHERE ").append(where).append(";");
+        return statement.toString();
+    }
 }

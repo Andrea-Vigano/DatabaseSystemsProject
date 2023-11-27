@@ -10,7 +10,7 @@ public class Database {
 
     private static final String username = "";
     private static final String password = "";
-    private static final String url = "";
+    private static final String url = "jdbc:oracle:thin:@csdoor.comp.polyu.edu.hk:FUCK:dbms";
     private static final Database instance;
     static {
         try {
