@@ -8,12 +8,17 @@ import java.io.PrintStream;
 public class MainController extends Controller {
     private final AuthenticationController authenticationController;
     private final ProductsController productsController;
+    private final UserController userController;
+    private final CartController cartController;
 
     public MainController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
         this.authenticationController = new AuthenticationController(printStream, database, sqlManager);
         this.productsController = new ProductsController(printStream, database, sqlManager);
+        this.userController = new UserController(printStream, database, sqlManager);
+        this.cartController = new CartController(printStream, database, sqlManager);
     }
+    // TODO add User to UserController after login, remove after logout and keep in sync after each update
 
     public boolean logIn(String username, String password) {
         return authenticationController.logIn(username, password);
@@ -39,12 +44,36 @@ public class MainController extends Controller {
         return authenticationController.getIsAdmin();
     }
 
+    public boolean addShippingAddress(String address) {
+        return userController.addShippingAddress(address);
+    }
+
+    public boolean removeShippingAddress(String id) {
+        return userController.removeShippingAddress(id);
+    }
+
+    public void showShippingAddresses() {
+        userController.showShippingAddresses();
+    }
+
+    public boolean comparePasswords(String password) {
+        return userController.comparePasswords(password);
+    }
+
+    public boolean changePassword(String password) {
+        return userController.changePassword(password);
+    }
+
     public boolean listProducts() {
         return productsController.list();
     }
 
     public boolean searchProducts(String category, String brand, double lowestPrice, double highestPrice) {
         return productsController.search(category, brand, lowestPrice, highestPrice);
+    }
+
+    public void showProduct(String id) {
+        productsController.show(id);
     }
 
     public boolean getCategoryId(String name) {
@@ -63,5 +92,25 @@ public class MainController extends Controller {
             String rating
     ) {
         return productsController.add(name, description, specification, price, brand, categoryId, warehouseId, supplierId, rating);
+    }
+
+    public boolean deleteProduct(String id) {
+        return productsController.delete(id);
+    }
+
+    public boolean isCartEmpty() {
+        return cartController.isEmpty();
+    }
+
+    public void showCart() {
+        cartController.show();
+    }
+
+    public boolean checkout() {
+        return cartController.checkout();
+    }
+
+    public boolean addToCart(String id) {
+        return cartController.add(id);
     }
 }

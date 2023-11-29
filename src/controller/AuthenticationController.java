@@ -22,10 +22,9 @@ public class AuthenticationController extends Controller {
     public boolean logIn(String username, String password) {
         String passwordHash = AuthenticationController.sha256(password);
         String where = "username=" + username
-                + " AND passwordHash=" + passwordHash
-                + "AND User.user_id=Password.user_id";
+                + " AND passwordHash=" + passwordHash;
         String statement = sqlManager.getSelectStatement(
-                new String[]{ "User", "Password" },
+                new String[]{ "User" },
                 new String[]{ "User.user_id" },
                 where);
         printStream.println(statement);
@@ -39,7 +38,8 @@ public class AuthenticationController extends Controller {
     }
 
     public boolean adminLogIn(String username, String password) {
-        String where = "username=" + username + " AND password=" + password;
+        String passwordHash = AuthenticationController.sha256(password);
+        String where = "username=" + username + " AND password=" + passwordHash;
         String statement = sqlManager.getSelectStatement("Administrator", where);
         printStream.println(statement);
 //        try {
@@ -53,8 +53,8 @@ public class AuthenticationController extends Controller {
     }
 
     public boolean singUp(String name, String username, String password, String email) {
-        String[] columns = new String[]{ "name", "username", "password", "email" };
-        String[] fields = new String[]{ name, username, password, email };
+        String[] columns = new String[]{ "name", "username", "passwordHash", "email" };
+        String[] fields = new String[]{ name, username, AuthenticationController.sha256(password), email };
         String statement = sqlManager.getInsertStatement("User", columns, fields);
         printStream.println(statement);
 //        try {
@@ -80,7 +80,7 @@ public class AuthenticationController extends Controller {
         return true;
     }
 
-    private static String sha256(final String base) {
+    public static String sha256(final String base) {
         try{
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             final byte[] hash = digest.digest(base.getBytes(StandardCharsets.UTF_8));

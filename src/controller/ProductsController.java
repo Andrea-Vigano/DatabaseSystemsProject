@@ -76,7 +76,8 @@ public class ProductsController extends Controller {
                 "Category.brand",
                 "Category.name",
                 "Supplier.name",
-                "Product.review"
+                "Product.review",
+                "Product.quantity"
         };
         String where = "Product.category_id = Category.category_id AND Product.supplier_id = Supplier.supplier_id";
         String statement = sqlManager.getSelectStatement(tables, fields, where);
@@ -181,6 +182,10 @@ public class ProductsController extends Controller {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
+        return true;
+    }
+
+    public boolean show(String id) {
         return true;
     }
 
