@@ -28,7 +28,7 @@ public class MainController extends Controller {
         return authenticationController.adminLogIn(username, password);
     }
 
-    public boolean signUp(String name, String username, String password, String email) {
+    public boolean signUp(String name, String username, String password, String email, String address) {
         return authenticationController.singUp(name, username, password, email);
     }
 

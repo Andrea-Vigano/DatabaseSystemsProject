@@ -57,7 +57,7 @@ public class CommandParser {
             this.performHelp();
         } else if (command.isExit()) {
             this.printStream.println("Quitting");
-            // Main loop will break on its own in App class
+            // Main loop will break on its own in-App class
         } else {
             this.printStream.println("Unknown command, type 'help' for usage information");
         }
@@ -98,7 +98,11 @@ public class CommandParser {
         String password = scanner.nextLine();
         printStream.print("Insert your email: ");
         String email = scanner.nextLine();
-        boolean result = this.controller.signUp(name, username, password, email);
+        printStream.print("Set your primary shipping address ");
+        String address = scanner.nextLine();
+
+
+        boolean result = this.controller.signUp(name, username, password, email, address);
         if (result) printStream.println("Successfully signed up");
         else printStream.println("Unable to sign up");
     }

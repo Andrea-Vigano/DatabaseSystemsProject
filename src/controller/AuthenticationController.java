@@ -27,11 +27,11 @@ public class AuthenticationController extends Controller {
                 new String[]{ "User.user_id" },
                 where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+                try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         isLogged = true;
         return true;
     }
@@ -41,11 +41,11 @@ public class AuthenticationController extends Controller {
         String where = "username=" + username + " AND password=" + passwordHash;
         String statement = sqlManager.getSelectStatement("Administrator", where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         isLogged = true;
         isAdmin = true;
         return true;
@@ -56,11 +56,13 @@ public class AuthenticationController extends Controller {
         String[] fields = new String[]{ name, username, AuthenticationController.sha256(password), email };
         String statement = sqlManager.getInsertStatement("User", columns, fields);
         printStream.println(statement);
-//        try {
-//            database.update(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+
+        try {
+            database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         isLogged = true;
         return true;
     }
