@@ -21,8 +21,7 @@ public class AuthenticationController extends Controller {
 
     public boolean logIn(String username, String password) {
         String passwordHash = AuthenticationController.sha256(password);
-        String where = "username=" + username
-                + " AND passwordHash=" + passwordHash;
+        String where = "username=" + username + " AND passwordHash=" + passwordHash;
         String statement = sqlManager.getSelectStatement(
                 new String[]{ "User" },
                 new String[]{ "User.user_id" },

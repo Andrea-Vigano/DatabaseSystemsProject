@@ -94,6 +94,16 @@ public class MainController extends Controller {
         return productsController.add(name, description, specification, price, brand, categoryId, warehouseId, supplierId, rating);
     }
 
+    public boolean updateProduct(
+            String id,
+            String name,
+            String description,
+            String specification,
+            String brand
+    ) {
+        return productsController.update(id, name, description, specification, null, brand, null, null, null);
+    }
+
     public boolean deleteProduct(String id) {
         return productsController.delete(id);
     }
