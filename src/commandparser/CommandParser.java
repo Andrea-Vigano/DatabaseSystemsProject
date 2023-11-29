@@ -23,16 +23,43 @@ public class CommandParser {
             this.wrapWithLoginCheck(this::performSignUp);
         } else if (command.isLogout()) {
             performLogOut();
-        } else if (command.isList()) {
+        } else if (command.isChangePassword()) {
+            this.wrapWithAuth(this::performChangePassword);
+        } else if (command.isShowShippingAddress()) {
+            this.wrapWithAuth(this::performShowShippingAddress);
+        } else if (command.isAddShippingAddress()) {
+            this.wrapWithAuth(this::performAddShippingAddress);
+        } else if (command.isDeleteShippingAddress()) {
+            this.wrapWithAuth(this::performDeleteShippingAddress);
+        } else if (command.isListProducts()) {
             this.wrapWithAuth(this::performList);
-        } else if (command.isSearch()) {
+        } else if (command.isSearchProducts()) {
             this.wrapWithAuth(this::performSearch);
         } else if (command.isAdminLogin()) {
             this.wrapWithLoginCheck(this::performAdminLogin);
         } else if (command.isAddProduct()) {
             this.wrapWithAdminAuth(this::performAddProduct);
+        } else if (command.isUpdateProduct()) {
+            this.wrapWithAuth(this::performUpdateProduct);
+        } else if (command.isDeleteProduct()) {
+            this.wrapWithAuth(this::performDeleteProduct);
+        } else if (command.isShowProduct()) {
+            this.wrapWithAuth(this::performShowProduct);
+        } else if (command.isAddToCart()) {
+            this.wrapWithAuth(this::performAddToCart);
+        } else if (command.isShowCart()) {
+            this.wrapWithAuth(this::performShowCart);
+        } else if (command.isCheckout()) {
+            this.wrapWithAuth(this::performCheckout);
+        } else if (command.isGenerateReport()) {
+            this.wrapWithAdminAuth(this::performGenerateReport);
+        } else if (command.isHelp()) {
+            this.performHelp();
+        } else if (command.isExit()) {
+            this.printStream.println("Quitting");
+            // Main loop will break on its own in App class
         } else {
-            this.printStream.println("Unknown command");
+            this.printStream.println("Unknown command, type 'help' for usage information");
         }
     }
 
@@ -82,6 +109,40 @@ public class CommandParser {
         else printStream.println("Unable to log out");
     }
 
+    private void performChangePassword() {
+        printStream.println("Insert your current password: ");
+        String password = scanner.nextLine();
+        if (this.controller.comparePasswords(password)) {
+             printStream.println("Insert your new password: ");
+             String newPassword = scanner.nextLine();
+             boolean result = this.controller.changePassword(newPassword);
+            if (result) printStream.println("Successfully changed password");
+            else printStream.println("Unable to change password");
+        } else {
+            printStream.println("Invalid password");
+        }
+    }
+
+    private void performShowShippingAddress() {
+        this.controller.showShippingAddresses();
+    }
+
+    private void performAddShippingAddress() {
+        printStream.print("Insert address: ");
+        String address = scanner.nextLine();
+        boolean result = this.controller.addShippingAddress(address);
+        if (result) printStream.println("Successfully added address");
+        else printStream.println("Unable to add address");
+    }
+
+    private void performDeleteShippingAddress() {
+        printStream.print("Insert product id: ");
+        String id = scanner.nextLine();
+        boolean result = this.controller.removeShippingAddress(id);
+        if (result) printStream.println("Successfully deleted shipping address with id: " + id);
+        else printStream.println("Unable to delete shipping address with id: " + id);
+    }
+
     private void performList() {
         boolean result = this.controller.listProducts();
         if (result) printStream.println("Successfully listed products");
@@ -90,22 +151,23 @@ public class CommandParser {
 
     private void performSearch() {
         String category = "", brand = "";
+        String isYes;
         double lowestPrice = 0.0, highestPrice = 0.0;
         printStream.print("Do you want to search products by category [Y/N]? ");
-        String isCategory = scanner.nextLine().toLowerCase();
-        if (Objects.equals(isCategory, "y")) {
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
             printStream.print("Insert category: ");
             category = scanner.nextLine();
         }
         printStream.print("Do you want to search products by brand [Y/N]? ");
-        String isBrand = scanner.nextLine().toLowerCase();
-        if (Objects.equals(isBrand, "y")) {
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
             printStream.print("Insert brand: ");
             brand = scanner.nextLine();
         }
         printStream.print("Do you want to search products by priceRange [Y/N]? ");
-        String isPriceRange = scanner.nextLine().toLowerCase();
-        if (Objects.equals(isPriceRange, "y")) {
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
             printStream.print("Insert lowest price: ");
             lowestPrice = Double.parseDouble(scanner.nextLine());
             printStream.print("Insert highest price: ");
@@ -127,6 +189,7 @@ public class CommandParser {
     }
 
     private void performAddProduct() {
+        // TODO Add non-mandatory fields options
         printStream.print("Insert product name: ");
         String name = scanner.nextLine();
         printStream.print("Insert product description: ");
@@ -148,5 +211,89 @@ public class CommandParser {
         // change return type ...
         boolean categoryId = this.controller.getCategoryId(category);
         // ...
+    }
+
+    private void performUpdateProduct() {
+        // TODO enhance update options
+        printStream.print("Insert product id: ");
+        String id = scanner.nextLine();
+        String name = null, description = null, specifications = null, brand = null;
+        String isYes;
+        printStream.print("Do you want to update the product name [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert name: ");
+            name = scanner.nextLine();
+        }
+        printStream.print("Do you want to update the product description [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert description: ");
+            description = scanner.nextLine();
+        }
+        printStream.print("Do you want to update the product specifications [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert specifications: ");
+            specifications = scanner.nextLine();
+        }
+        printStream.print("Do you want to update the product brand [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert brand: ");
+            brand = scanner.nextLine();
+        }
+        boolean result = this.controller.updateProduct(id, name, description, specifications, brand);
+        if (result) printStream.println("Successfully updated product with id: " + id);
+        else printStream.println("Unable to update product with id: " + id);
+    }
+
+    private void performDeleteProduct() {
+        printStream.print("Insert product id: ");
+        String id = scanner.nextLine();
+        boolean result = this.controller.deleteProduct(id);
+        if (result) printStream.println("Successfully deleted product with id: " + id);
+        else printStream.println("Unable to delete product with id: " + id);
+    }
+
+    private void performShowProduct() {
+        printStream.print("Insert product id: ");
+        String id = scanner.nextLine();
+        this.controller.showProduct(id);
+    }
+
+    private void performAddToCart() {
+        printStream.print("Insert product id: ");
+        String id = scanner.nextLine();
+        boolean result = this.controller.addToCart(id);
+        if (result) printStream.println("Successfully added to cart product with id: " + id);
+        else printStream.println("Unable to add to cart product with id: " + id);
+    }
+
+    private void performShowCart() {
+        if (this.controller.isCartEmpty()) printStream.println("Cart is empty");
+        else this.controller.showCart();
+    }
+
+    private void performCheckout() {
+        // Select shipping address ? from User.getShippingAddresses()
+        // Select payment method ? from a static array
+        boolean result = this.controller.checkout();
+        if (result) printStream.println("Successfully checked out");
+        else printStream.println("Unable to checkout");
+    }
+
+    private void performGenerateReport() {
+
+    }
+
+    private void performHelp() {
+        if (this.controller.isAdmin()) {
+            printStream.println("ADMIN HELP MESSAGE\n\n...");
+        } else if (this.controller.isLogged()) {
+            printStream.println("USER HELP MESSAGE\n\n...");
+        } else {
+            printStream.println("GUEST USER HELP MESSAGE\n\n...");
+        }
     }
 }
