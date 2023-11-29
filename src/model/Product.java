@@ -8,8 +8,7 @@ public class Product {
     private double price;
     private String brand;
     private String categoryId;
-    private String warehouseId;
-    private String supplierId;
+    private String warehouse;
     private int rating;
 
     public Product() {
@@ -73,20 +72,13 @@ public class Product {
     }
 
     public String getWarehouseId() {
-        return warehouseId;
+        return warehouse;
     }
 
     public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
+        this.warehouse = warehouseId;
     }
 
-    public String getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(String supplierId) {
-        this.supplierId = supplierId;
-    }
 
     public int getRating() {
         return rating;
