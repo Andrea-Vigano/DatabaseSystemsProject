@@ -6,6 +6,8 @@ public class User {
     private String name;
     private String email;
 
+    public Integer phoneNumber;
+
     public User() {
 
     }
@@ -41,4 +43,11 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setPhoneNumber(Integer phoneNumber){ this.phoneNumber=phoneNumber;}
+
+    public Integer getPhoneNumber(Integer phoneNumber){
+        return phoneNumber;
+    }
+
 }
