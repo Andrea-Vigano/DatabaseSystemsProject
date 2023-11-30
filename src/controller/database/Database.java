@@ -4,6 +4,7 @@ import oracle.jdbc.OracleDriver;
 import oracle.jdbc.driver.OracleConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Database {
     private static OracleConnection connection;
@@ -47,7 +48,22 @@ public class Database {
         statement.executeUpdate(sqlStatement);
     }
 
+    public ArrayList<String> insertAndGetKeys(String sqlStatement) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sqlStatement, Statement.RETURN_GENERATED_KEYS);
+        ResultSet result = statement.getGeneratedKeys();
+        ArrayList<String> keys = new ArrayList<>();
+        while (result.next()) keys.add(String.valueOf(result.getLong(1)));
+        return keys;
+    }
+
     public void commit() throws SQLException {
         connection.commit();
+    }
+
+    public void abort() {
+        try {
+            connection.abort();
+        } catch (SQLException ignored) { }
     }
 }

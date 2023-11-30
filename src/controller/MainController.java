@@ -4,6 +4,7 @@ import controller.database.Database;
 import controller.database.SQLManager;
 
 import java.io.PrintStream;
+import java.sql.SQLException;
 
 public class MainController extends Controller {
     private final AuthenticationController authenticationController;
@@ -116,11 +117,21 @@ public class MainController extends Controller {
         cartController.show();
     }
 
-    public boolean checkout() {
-        return cartController.checkout();
+    public boolean checkout(String shippingAddressId) {
+        return cartController.checkout(shippingAddressId, this.getUserId());
     }
 
-    public boolean addToCart(String id) {
-        return cartController.add(id);
+    public boolean addToCart(String id, int quantity) {
+        return cartController.add(id, quantity, this.getUserId());
+    }
+
+    public String getUserId() {
+        return this.userController.getUser().getUserId();
+    }
+
+    public void trySmoothExit() {
+        try {
+            database.closeConnection();
+        } catch (SQLException ignored) { }
     }
 }

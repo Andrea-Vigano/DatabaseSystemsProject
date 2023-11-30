@@ -15,6 +15,10 @@ public class SQLManager {
         return "SELECT * FROM " + table + " WHERE " + where + ";";
     }
 
+    public String getSelectStatement(String table) {
+        return "SELECT * FROM " + table + ";";
+    }
+
     public String getSelectStatement(String table, String[] fields) {
         StringBuilder statement = new StringBuilder("SELECT ");
         for (int i = 0; i < fields.length; i++) {
@@ -55,8 +59,34 @@ public class SQLManager {
         return statement.toString();
     }
 
+    public String getInsertStatement(String table, String[] columns, String[][] fields) {
+        StringBuilder statement = new StringBuilder("INSERT INTO ").append(table).append(" (");
+        for (int i = 0; i < columns.length; i++) {
+            statement.append(columns[i]);
+            if (i != columns.length - 1) statement.append(", ");
+        }
+        statement.append(") VALUES (");
+        String[] values;
+        for (int j = 0; j < fields.length; j++) {
+            values = fields[j];
+            for (int i = 0; i < values.length; i++) {
+                statement.append(values[i]);
+                if (i != values.length - 1) statement.append(", ");
+            }
+            statement.append(")");
+            if (j != fields.length - 1) statement.append(",");
+        }
+        statement.append(";");
+
+        return statement.toString();
+    }
+
     public String getDeleteStatement(String table, String where) {
         return "DELETE FROM " + table + " WHERE " + where + ";";
+    }
+
+    public String getFlushStatement(String table) {
+        return "DELETE FROM " + table + ";";
     }
 
     public String getUpdateStatement(String table, String[] columns, String[] fields, String where) {
