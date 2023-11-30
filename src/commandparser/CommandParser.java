@@ -84,8 +84,18 @@ public class CommandParser {
     private void performLogin() {
         printStream.print("Insert your username: ");
         String username = scanner.nextLine();
+        while(username.length() == 0){
+            printStream.println("Username cannot be null! Please insert your username again!");
+            printStream.print("Insert your username: ");
+            username = scanner.nextLine();
+        }
         printStream.print("Insert your password: ");
         String password = scanner.nextLine();
+        while(password.length() == 0){
+            printStream.println("Password cannot be null! Please insert your password again!");
+            printStream.print("Insert your password: ");
+            password = scanner.nextLine();
+        }
         boolean result = this.controller.logIn(username, password);
         if (result) printStream.println("Successfully logged in");
         else printStream.println("Unable to log in");
@@ -94,10 +104,25 @@ public class CommandParser {
     private void performSignUp() {
         printStream.print("Insert your name: ");
         String name = scanner.nextLine();
+        while(name.length() == 0){
+            printStream.println("First name cannot be null! Please insert your first name again!");
+            printStream.print("Insert your name: ");
+            name = scanner.nextLine();
+        }
         printStream.print("Insert your username: ");
         String username = scanner.nextLine();
+        while(username.length() == 0){
+            printStream.println("Username cannot be null! Please insert your username again!");
+            printStream.print("Insert your username: ");
+            username = scanner.nextLine();
+        }
         printStream.print("Insert your password: ");
         String password = scanner.nextLine();
+        while(password.length() == 0){
+            printStream.println("Password cannot be null! Please insert your password again!");
+            printStream.print("Insert your password: ");
+            password = scanner.nextLine();
+        }
         printStream.print("Insert your email: ");
         String email = scanner.nextLine();
         printStream.print("Insert your address: ");

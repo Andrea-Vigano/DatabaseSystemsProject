@@ -46,6 +46,7 @@ public class Database {
     public void update(String sqlStatement) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate(sqlStatement);
+        statement.execute("COMMIT");
     }
 
     public ArrayList<String> insertAndGetKeys(String sqlStatement) throws SQLException {

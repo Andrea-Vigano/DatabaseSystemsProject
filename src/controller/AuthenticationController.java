@@ -69,7 +69,7 @@ public class AuthenticationController extends Controller {
     }
 
     public boolean singUp(String name, String username, String password, String email, String address, String phoneNumber) {
-        int userID = getLatestUserID() + 1;
+        int userID = getLatestUserID();
         String[] columns = new String[]{"userID" ,"name", "username", "passwordHash", "email", "address", "phoneNumber" };
         String[] fields = new String[]{String.valueOf(userID), name, username, AuthenticationController.sha256(password), email, address, phoneNumber };
         String statement = sqlManager.getInsertStatement("Users", columns, fields);
@@ -99,18 +99,16 @@ public class AuthenticationController extends Controller {
 
 
     private int getLatestUserID() {
-        String statement = "SELECT MAX(userID) AS maxUserID FROM Users";
-
+        String statement = "SELECT NVL(MAX(userID), 0) AS maxUserID FROM Users";
         try {
             ResultSet results = database.query(statement);
             if (results.next()) {
-                return results.getInt("maxUserID");
+                return results.getInt("maxUserID") + 1;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return 0;
+        return 1;
     }
 
     public static String sha256(final String base) {
