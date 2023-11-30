@@ -9,23 +9,27 @@ import java.util.Objects;
 
 public class ProductsController extends Controller {
 
+    private int productCnt = 1;
+
     public ProductsController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
     }
 
     public boolean list() {
-        String[] tables = new String[]{ "Product", "Category", "Supplier" };
+        String[] tables = new String[]{ "Product", "Category", "Admin" };
         String[] fields = new String[]{
                 "Product.name",
                 "Product.description",
-                "Product.specifications",
                 "Product.price",
-                "Category.brand",
-                "Category.name",
-                "Supplier.name",
-                "Product.review"
+                "Product.brand",
+                "Product.quantity",
+                "Product.supplier",
+                "Product.warehouse",
+                "Product.review",
+                "Category.categoryID",
+                "Admin.adminID"
         };
-        String where = "Product.category_id = Category.category_id AND Product.supplier_id = Supplier.supplier_id";
+        String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
         String statement = sqlManager.getSelectStatement(tables, fields, where);
         printStream.println(statement);
 //        try {
@@ -37,18 +41,20 @@ public class ProductsController extends Controller {
     }
 
     public boolean search(String category, String brand, double lowestPrice, double highestPrice) {
-        String[] tables = new String[]{ "Product", "Category", "Supplier" };
+        String[] tables = new String[]{ "Product", "Category", "Admin" };
         String[] fields = new String[]{
                 "Product.name",
                 "Product.description",
-                "Product.specifications",
                 "Product.price",
-                "Category.brand",
-                "Category.name",
-                "Supplier.name",
-                "Product.review"
+                "Product.brand",
+                "Product.quantity",
+                "Product.supplier",
+                "Product.warehouse",
+                "Product.review",
+                "Category.categoryID",
+                "Admin.adminID"
         };
-        String where = "Product.category_id = Category.category_id AND Product.supplier_id = Supplier.supplier_id";
+        String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
 
         if (!Objects.equals(category, "")) where += " AND Category.name = " + category;
         if (!Objects.equals(brand, "")) where += " AND Category.brand = " + brand;
@@ -66,20 +72,20 @@ public class ProductsController extends Controller {
     }
 
     public boolean adminList() {
-        String[] tables = new String[]{ "Product", "Category", "Supplier" };
+        String[] tables = new String[]{ "Product", "Category", "Admin" };
         String[] fields = new String[]{
-                "Product.product_id",
                 "Product.name",
                 "Product.description",
-                "Product.specifications",
                 "Product.price",
-                "Category.brand",
-                "Category.name",
-                "Supplier.name",
+                "Product.brand",
+                "Product.quantity",
+                "Product.supplier",
+                "Product.warehouse",
                 "Product.review",
-                "Product.quantity"
+                "Category.categoryID",
+                "Admin.adminID"
         };
-        String where = "Product.category_id = Category.category_id AND Product.supplier_id = Supplier.supplier_id";
+        String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
         String statement = sqlManager.getSelectStatement(tables, fields, where);
         printStream.println(statement);
 //        try {
@@ -93,18 +99,19 @@ public class ProductsController extends Controller {
     public boolean add(
             String name,
             String description,
-            String specification,
             double price,
             String brand,
+            String s, int quantity,
+            String supplier,
+            String warehouse,
+            String review,
             String categoryId,
-            String warehouseId,
-            String supplierId,
-            String rating
+            String adminId
     ) {
         String statement = sqlManager.getInsertStatement(
                 "Product",
-                new String[] { "name", "description", "specification", "price", "brand", "category_id", "warehouse_id", "supplier_id", "rating" },
-                new String[] { name, description, specification, Objects.toString(price), brand, categoryId, warehouseId, supplierId, rating }
+                new String[] { "productID", "name", "description", "price", "brand", "quantity", "supplier", "warehouse", "review", "categoryID", "adminID" },
+                new String[] {String.valueOf(productCnt++), name, description, Objects.toString(price), brand, Objects.toString(quantity), supplier, warehouse, review, categoryId, adminId }
         );
         printStream.println(statement);
 //        try {
@@ -115,8 +122,8 @@ public class ProductsController extends Controller {
         return true;
     }
 
-    public boolean delete(String id) {
-        String statement = sqlManager.getDeleteStatement("Product", "product_id=" + id);
+    public boolean delete(String productID) {
+        String statement = sqlManager.getDeleteStatement("Product", "productID=" + productID);
         printStream.println(statement);
         //        try {
 //            ResultSet results = database.update(statement);
@@ -127,16 +134,18 @@ public class ProductsController extends Controller {
     }
 
     public boolean update(
-            String id,
+            String productID,
             String name,
             String description,
-            String specification,
             Double price,
+            String brand,
+            Integer quantity,
+            String supplier,
+            String warehouse,
+            String review,
             String categoryId,
-            String warehouseId,
-            String supplierId,
-            String review
-            ) {
+            String adminId
+    ) {
         ArrayList<String> columns = new ArrayList<>();
         ArrayList<String> fields = new ArrayList<>();
         if (name != null) {
@@ -147,34 +156,42 @@ public class ProductsController extends Controller {
             columns.add("description");
             fields.add(description);
         }
-        if (specification != null) {
-            columns.add("specification");
-            fields.add(specification);
-        }
         if (price != null) {
             columns.add("price");
             fields.add(Objects.toString(price));
         }
-        if (categoryId != null) {
-            columns.add("category_id");
-            fields.add(categoryId);
+        if (brand != null) {
+            columns.add("brand");
+            fields.add(brand);
         }
-        if (warehouseId != null) {
-            columns.add("warehouse_id");
-            fields.add(warehouseId);
+        if (quantity != null) {
+            columns.add("quantity");
+            fields.add(Objects.toString(quantity));
         }
-        if (supplierId != null) {
+        if (supplier != null) {
             columns.add("supplier_id");
-            fields.add(supplierId);
+            fields.add(supplier);
+        }
+        if (warehouse != null) {
+            columns.add("warehouseID");
+            fields.add(warehouse);
         }
         if (review != null) {
             columns.add("review");
             fields.add(review);
         }
+        if (categoryId != null) {
+            columns.add("categoryID");
+            fields.add(categoryId);
+        }
+        if (adminId != null) {
+            columns.add("adminID");
+            fields.add(adminId);
+        }
         String statement = sqlManager.getUpdateStatement("Product",
                 columns.toArray(new String[]{}),
                 fields.toArray(new String[]{}),
-                "product_id=" + id
+                "productID=" + productID
         );
         printStream.println(statement);
 //        try {

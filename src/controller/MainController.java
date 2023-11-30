@@ -84,25 +84,32 @@ public class MainController extends Controller {
     public boolean addProduct(
             String name,
             String description,
-            String specification,
             double price,
             String brand,
+            int quantity,
+            String supplier,
+            String warehouse,
+            String review,
             String categoryId,
-            String warehouseId,
-            String supplierId,
-            String rating
+            String adminId
     ) {
-        return productsController.add(name, description, specification, price, brand, categoryId, warehouseId, supplierId, rating);
+        return productsController.add(name, description, price, brand, brand, quantity, supplier, warehouse, review, categoryId, adminId);
     }
 
     public boolean updateProduct(
-            String id,
+            String productID,
             String name,
             String description,
-            String specification,
-            String brand
+            Double price,
+            String brand,
+            Integer quantity,
+            String supplier,
+            String warehouse,
+            String review,
+            String categoryId,
+            String adminId
     ) {
-        return productsController.update(id, name, description, specification, null, brand, null, null, null);
+        return productsController.update(productID, name, description, price, brand, quantity, supplier, warehouse, review, null, null);
     }
 
     public boolean deleteProduct(String id) {

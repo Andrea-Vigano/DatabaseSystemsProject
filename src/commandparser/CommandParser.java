@@ -119,9 +119,9 @@ public class CommandParser {
         printStream.println("Insert your current password: ");
         String password = scanner.nextLine();
         if (this.controller.comparePasswords(password)) {
-             printStream.println("Insert your new password: ");
-             String newPassword = scanner.nextLine();
-             boolean result = this.controller.changePassword(newPassword);
+            printStream.println("Insert your new password: ");
+            String newPassword = scanner.nextLine();
+            boolean result = this.controller.changePassword(newPassword);
             if (result) printStream.println("Successfully changed password");
             else printStream.println("Unable to change password");
         } else {
@@ -200,20 +200,20 @@ public class CommandParser {
         String name = scanner.nextLine();
         printStream.print("Insert product description: ");
         String description = scanner.nextLine();
-        printStream.print("Insert product specifications: ");
-        String specifications = scanner.nextLine();
         printStream.print("Insert product price: ");
         double price = Double.parseDouble(scanner.nextLine());
         printStream.print("Insert product brand: ");
         String brand = scanner.nextLine();
-        printStream.print("Insert product category name: ");
-        String category = scanner.nextLine();
-        printStream.print("Insert product warehouse name: ");
-        String warehouse = scanner.nextLine();
+        printStream.print("Insert product quanity: ");
+        int quantity = Integer.parseInt(scanner.nextLine());
         printStream.print("Insert product supplier name: ");
         String supplier = scanner.nextLine();
-        printStream.print("Insert product rating: ");
-        String rating = scanner.nextLine();
+        printStream.print("Insert product warehouse name: ");
+        String warehouse = scanner.nextLine();
+        printStream.print("Insert product review: ");
+        String review = scanner.nextLine();
+        printStream.print("Insert category name: ");
+        String category = scanner.nextLine();
         // change return type ...
         boolean categoryId = this.controller.getCategoryId(category);
         // ...
@@ -221,9 +221,11 @@ public class CommandParser {
 
     private void performUpdateProduct() {
         // TODO enhance update options
-        printStream.print("Insert product id: ");
-        String id = scanner.nextLine();
-        String name = null, description = null, specifications = null, brand = null;
+        printStream.print("Insert product product id: ");
+        String productID = scanner.nextLine();
+        String name = null, description = null, brand = null, supplier = null, warehouse = null, review = null;
+        double price = 0.0;
+        int quantity = 0;
         String isYes;
         printStream.print("Do you want to update the product name [Y/N]? ");
         isYes = scanner.nextLine().toLowerCase();
@@ -237,11 +239,11 @@ public class CommandParser {
             printStream.print("Insert description: ");
             description = scanner.nextLine();
         }
-        printStream.print("Do you want to update the product specifications [Y/N]? ");
+        printStream.print("Do you want to update the product price [Y/N]? ");
         isYes = scanner.nextLine().toLowerCase();
         if (Objects.equals(isYes, "y")) {
             printStream.print("Insert specifications: ");
-            specifications = scanner.nextLine();
+            price = Double.parseDouble(scanner.nextLine());
         }
         printStream.print("Do you want to update the product brand [Y/N]? ");
         isYes = scanner.nextLine().toLowerCase();
@@ -249,9 +251,33 @@ public class CommandParser {
             printStream.print("Insert brand: ");
             brand = scanner.nextLine();
         }
-        boolean result = this.controller.updateProduct(id, name, description, specifications, brand);
-        if (result) printStream.println("Successfully updated product with id: " + id);
-        else printStream.println("Unable to update product with id: " + id);
+        printStream.print("Do you want to update the product quantity [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert brand: ");
+            quantity = Integer.parseInt(scanner.nextLine());
+        }
+        printStream.print("Do you want to update the product supplier [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert brand: ");
+            supplier = scanner.nextLine();
+        }
+        printStream.print("Do you want to update the product warehouse [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert brand: ");
+            warehouse = scanner.nextLine();
+        }
+        printStream.print("Do you want to update the product review [Y/N]? ");
+        isYes = scanner.nextLine().toLowerCase();
+        if (Objects.equals(isYes, "y")) {
+            printStream.print("Insert brand: ");
+            review = scanner.nextLine();
+        }
+        boolean result = this.controller.updateProduct(productID, name, description, price, brand, quantity, supplier, warehouse, review, null, null);
+        if (result) printStream.println("Successfully updated product with id: " + productID);
+        else printStream.println("Unable to update product with id: " + productID);
     }
 
     private void performDeleteProduct() {
