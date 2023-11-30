@@ -10,8 +10,6 @@ public class Orders {
 
     private Date dateCreated;
 
-    private Date dateShipped;
-
     private Integer quantity;
 
     private String address;
@@ -20,14 +18,6 @@ public class Orders {
 
     private String warehouse;
 
-
-    public Date getDateShipped() {
-        return dateShipped;
-    }
-
-    public void setDateShipped(Date dateShipped) {
-        this.dateShipped = dateShipped;
-    }
 
     public String getOrderId() {
         return orderId;

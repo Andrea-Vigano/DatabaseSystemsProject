@@ -7,6 +7,31 @@ public class User {
     private String email;
 
     public Integer phoneNumber;
+    private String address;
+    private String passwordHash;
+
+    public Integer getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+
+
 
     public User() {
 
