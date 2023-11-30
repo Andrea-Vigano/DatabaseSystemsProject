@@ -3,36 +3,20 @@ package model;
 import java.util.Date;
 
 public class Orders {
-
-    private String orderId;
-
-    private String history;
-
+    private String orderID;
     private Date dateCreated;
-
-    private Integer quantity;
-
-    private String address;
-
-    private String supplier;
-
     private String warehouse;
+    private String userID;
+    private String addressID;
 
+    // Getters and setters
 
-    public String getOrderId() {
-        return orderId;
+    public String getOrderID() {
+        return orderID;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getHistory() {
-        return history;
-    }
-
-    public void setHistory(String history) {
-        this.history = history;
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
     }
 
     public Date getDateCreated() {
@@ -43,35 +27,27 @@ public class Orders {
         this.dateCreated = dateCreated;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(String supplier) {
-        this.supplier = supplier;
-    }
-
     public String getWarehouse() {
         return warehouse;
     }
 
     public void setWarehouse(String warehouse) {
         this.warehouse = warehouse;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getAddressID() {
+        return addressID;
+    }
+
+    public void setAddressID(String addressID) {
+        this.addressID = addressID;
     }
 }

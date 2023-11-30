@@ -1,30 +1,20 @@
 package model;
 
-public class User {
-    private String userID;
-    private String name;
+public class Admin {
+    private String adminID;
     private String username;
     private String passwordHash;
     private String email;
-    private String address;
     private String phoneNumber;
 
     // Getters and setters
 
-    public String getUserID() {
-        return userID;
+    public String getAdminID() {
+        return adminID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setAdminID(String adminID) {
+        this.adminID = adminID;
     }
 
     public String getUsername() {
@@ -49,14 +39,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhoneNumber() {
