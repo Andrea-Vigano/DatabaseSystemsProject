@@ -18,8 +18,8 @@ public class App {
     }
 
     static public void main(String[] args) {
-        MainController mainController = new MainController(printStream, Database.get(), new SQLManager());
-        App app = new App(mainController);
+        MainController MainController = new MainController(printStream, Database.get(), new SQLManager());
+        App app = new App(MainController);
         app.run();
     }
 

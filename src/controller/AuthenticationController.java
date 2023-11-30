@@ -43,11 +43,11 @@ public class AuthenticationController extends Controller {
         String where = "username=" + username + " AND passwordHash=" + passwordHash;
         String statement = sqlManager.getSelectStatement("Admin", where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         isLogged = true;
         isAdmin = true;
         return true;
