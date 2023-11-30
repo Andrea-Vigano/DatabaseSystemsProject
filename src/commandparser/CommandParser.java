@@ -22,7 +22,7 @@ public class CommandParser {
         } else if (command.isSignup()) {
             this.wrapWithLoginCheck(this::performSignUp);
         } else if (command.isLogout()) {
-            performLogOut();
+            this.performLogOut();
         } else if (command.isChangePassword()) {
             this.wrapWithAuth(this::performChangePassword);
         } else if (command.isShowShippingAddress()) {
@@ -57,7 +57,8 @@ public class CommandParser {
             this.performHelp();
         } else if (command.isExit()) {
             this.printStream.println("Quitting");
-            // Main loop will break on its own in-App class
+            this.controller.trySmoothExit();
+            // Main loop will break on its own in App class
         } else {
             this.printStream.println("Unknown command, type 'help' for usage information");
         }
@@ -98,11 +99,7 @@ public class CommandParser {
         String password = scanner.nextLine();
         printStream.print("Insert your email: ");
         String email = scanner.nextLine();
-        printStream.print("Set your primary shipping address ");
-        String address = scanner.nextLine();
-
-
-        boolean result = this.controller.signUp(name, username, password, email, address);
+        boolean result = this.controller.signUp(name, username, password, email);
         if (result) printStream.println("Successfully signed up");
         else printStream.println("Unable to sign up");
     }
@@ -269,7 +266,9 @@ public class CommandParser {
     private void performAddToCart() {
         printStream.print("Insert product id: ");
         String id = scanner.nextLine();
-        boolean result = this.controller.addToCart(id);
+        printStream.print("Insert quantity: ");
+        int quantity = Integer.parseInt(scanner.nextLine());
+        boolean result = this.controller.addToCart(id, quantity);
         if (result) printStream.println("Successfully added to cart product with id: " + id);
         else printStream.println("Unable to add to cart product with id: " + id);
     }
@@ -280,9 +279,11 @@ public class CommandParser {
     }
 
     private void performCheckout() {
-        // Select shipping address ? from User.getShippingAddresses()
-        // Select payment method ? from a static array
-        boolean result = this.controller.checkout();
+        this.performShowShippingAddress();
+        printStream.println("Insert shipping address id: ");
+        String shippingAddressId = scanner.nextLine();
+        // TODO payment method
+        boolean result = this.controller.checkout(shippingAddressId);
         if (result) printStream.println("Successfully checked out");
         else printStream.println("Unable to checkout");
     }
