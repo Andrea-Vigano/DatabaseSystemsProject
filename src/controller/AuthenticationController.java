@@ -15,31 +15,33 @@ public class AuthenticationController extends Controller {
     private boolean isLogged = false;
     private boolean isAdmin = false;
 
+    private int userCnt = 1;
+
     public AuthenticationController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
     }
 
     public boolean logIn(String username, String password) {
         String passwordHash = AuthenticationController.sha256(password);
-        String where = "username=" + username + " AND passwordHash=" + passwordHash;
+        String where = "username=" + "'" + username + "'" + " AND passwordHash=" + "'" + passwordHash + "'";
         String statement = sqlManager.getSelectStatement(
-                new String[]{ "User" },
-                new String[]{ "User.user_id" },
+                new String[]{ "Users" },
+                new String[]{ "Users.userID" },
                 where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         isLogged = true;
         return true;
     }
 
     public boolean adminLogIn(String username, String password) {
         String passwordHash = AuthenticationController.sha256(password);
-        String where = "username=" + username + " AND password=" + passwordHash;
-        String statement = sqlManager.getSelectStatement("Administrator", where);
+        String where = "username=" + username + " AND passwordHash=" + passwordHash;
+        String statement = sqlManager.getSelectStatement("Admin", where);
         printStream.println(statement);
 //        try {
 //            ResultSet results = database.query(statement);
@@ -51,16 +53,16 @@ public class AuthenticationController extends Controller {
         return true;
     }
 
-    public boolean singUp(String name, String username, String password, String email) {
-        String[] columns = new String[]{ "name", "username", "passwordHash", "email" };
-        String[] fields = new String[]{ name, username, AuthenticationController.sha256(password), email };
-        String statement = sqlManager.getInsertStatement("User", columns, fields);
+    public boolean singUp(String name, String username, String password, String email, String address, String phoneNumber) {
+        String[] columns = new String[]{"userID" ,"name", "username", "passwordHash", "email", "address", "phoneNumber" };
+        String[] fields = new String[]{String.valueOf(userCnt++), name, username, AuthenticationController.sha256(password), email, address, phoneNumber };
+        String statement = sqlManager.getInsertStatement("Users", columns, fields);
         printStream.println(statement);
-//        try {
-//            database.update(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         isLogged = true;
         return true;
     }
