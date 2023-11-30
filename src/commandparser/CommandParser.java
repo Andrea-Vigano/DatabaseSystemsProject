@@ -1,5 +1,6 @@
 package commandparser;
 
+import controller.AuthenticationController;
 import controller.MainController;
 
 import java.io.PrintStream;
@@ -99,9 +100,11 @@ public class CommandParser {
         String password = scanner.nextLine();
         printStream.print("Insert your email: ");
         String email = scanner.nextLine();
-        printStream.print("Insert your primary shipping address");
+        printStream.print("Insert your address: ");
         String address = scanner.nextLine();
-        boolean result = this.controller.signUp(name, username, password, email, address);
+        printStream.print("Insert your phone number: ");
+        String phoneNumber = scanner.nextLine();
+        boolean result = this.controller.signUp(name, username, password, email, address, phoneNumber);
         if (result) printStream.println("Successfully signed up");
         else printStream.println("Unable to sign up");
     }
