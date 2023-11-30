@@ -9,6 +9,16 @@ public class User {
     private String address;
     private String phoneNumber;
 
+    public User(String userID, String name, String username, String passwordHash, String email, String address, String phoneNumber) {
+        this.userID = userID;
+        this.name = name;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
     // Getters and setters
 
     public String getUserID() {

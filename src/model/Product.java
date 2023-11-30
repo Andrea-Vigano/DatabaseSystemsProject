@@ -13,6 +13,7 @@ public class Product {
     private int quantity;
     private String adminID;
 
+
     // Getters and setters
 
     public String getProductID() {

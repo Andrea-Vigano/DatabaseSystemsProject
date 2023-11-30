@@ -5,6 +5,12 @@ public class Address {
     private String userID;
     private String name;
 
+    public Address(String addressID, String userID, String name) {
+        this.addressID = addressID;
+        this.userID = userID;
+        this.name = name;
+    }
+
 
     public String getAddressID() {
         return addressID;

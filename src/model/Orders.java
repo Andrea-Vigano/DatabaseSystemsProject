@@ -9,6 +9,14 @@ public class Orders {
     private String userID;
     private String addressID;
 
+    public Orders(String orderID, Date dateCreated, String warehouse, String userID, String addressID) {
+        this.orderID = orderID;
+        this.dateCreated = dateCreated;
+        this.warehouse = warehouse;
+        this.userID = userID;
+        this.addressID = addressID;
+    }
+
     // Getters and setters
 
     public String getOrderID() {

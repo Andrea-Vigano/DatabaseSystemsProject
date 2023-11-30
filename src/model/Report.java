@@ -6,6 +6,13 @@ public class Report {
     private double revenue;
     private String adminID;
 
+    public Report(String reportID, String description, double revenue, String adminID) {
+        this.reportID = reportID;
+        this.description = description;
+        this.revenue = revenue;
+        this.adminID = adminID;
+    }
+
 
     public String getReportID() {
         return reportID;
