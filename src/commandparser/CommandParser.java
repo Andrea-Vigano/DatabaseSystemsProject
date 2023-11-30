@@ -99,7 +99,9 @@ public class CommandParser {
         String password = scanner.nextLine();
         printStream.print("Insert your email: ");
         String email = scanner.nextLine();
-        boolean result = this.controller.signUp(name, username, password, email);
+        printStream.print("Insert your primary shipping address");
+        String address = scanner.nextLine();
+        boolean result = this.controller.signUp(name, username, password, email, address);
         if (result) printStream.println("Successfully signed up");
         else printStream.println("Unable to sign up");
     }
