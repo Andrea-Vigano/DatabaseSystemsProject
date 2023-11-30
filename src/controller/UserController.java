@@ -16,7 +16,7 @@ public class UserController extends Controller {
         String statement = sqlManager.getInsertStatement(
             "Address",
             new String[] { "address", "user_id" },
-            new String[] { address, this.user.getUserId()}
+            new String[] { address, this.user.getUserID()}
         );
         printStream.println(statement);
 //        try {
