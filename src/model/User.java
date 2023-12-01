@@ -6,8 +6,16 @@ public class User {
     private String username;
     private String passwordHash;
     private String email;
-    private String address;
     private String phoneNumber;
+
+    public User(int userID, String name, String username, String passwordHash, String email, String phoneNumber) {
+        this.userID = userID;
+        this.name = name;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
     // Getters and setters
 
@@ -49,14 +57,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhoneNumber() {

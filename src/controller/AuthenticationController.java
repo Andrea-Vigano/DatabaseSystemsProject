@@ -2,6 +2,7 @@ package controller;
 
 import controller.database.Database;
 import controller.database.SQLManager;
+import model.User;
 
 import java.io.PrintStream;
 import java.nio.charset.Charset;
@@ -19,12 +20,12 @@ public class AuthenticationController extends Controller {
         super(printStream, database, sqlManager);
     }
 
-    public boolean logIn(String username, String password) {
+    public User logIn(String username, String password) {
         String passwordHash = AuthenticationController.sha256(password);
         String where = "username=" + "'" + username + "'" + " AND passwordHash=" + "'" + passwordHash + "'";
         String statement = sqlManager.getSelectStatement(
                 new String[]{"Users"},
-                new String[]{"COUNT(*) AS count"},
+                new String[]{ "COUNT(*) AS count", "userID", "name", "username", "passwordHash", "email", "phoneNumber" },
                 where
         );
         printStream.println(statement);
@@ -34,13 +35,19 @@ public class AuthenticationController extends Controller {
                 int count = results.getInt("count");
                 if (count == 1) {
                     isLogged = true;
-                    return true;
+                    int userID = results.getInt("userID");
+                    String name = results.getString("name");
+                    String _username = results.getString("username");
+                    String _passwordHash = results.getString("passwordHash");
+                    String email = results.getString("email");
+                    String phoneNumber = results.getString("phoneNumber");
+                    return new User(userID, name, _username, _passwordHash, email, phoneNumber);
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
+        return null;
     }
 
     public boolean adminLogIn(String username, String password) {
@@ -68,19 +75,19 @@ public class AuthenticationController extends Controller {
         return false;
     }
 
-    public boolean singUp(String name, String username, String password, String email, String address, String phoneNumber) {
+    public User singUp(String name, String username, String password, String email, String phoneNumber) {
         int userID = getLatestUserID();
-        String[] columns = new String[]{"userID" ,"name", "username", "passwordHash", "email", "address", "phoneNumber" };
-        String[] fields = new String[]{String.valueOf(userID), name, username, AuthenticationController.sha256(password), email, address, phoneNumber };
+        String[] columns = new String[]{"userID" ,"name", "username", "passwordHash", "email", "phoneNumber" };
+        String[] fields = new String[]{String.valueOf(userID), name, username, AuthenticationController.sha256(password), email, phoneNumber };
         String statement = sqlManager.getInsertStatement("Users", columns, fields);
         printStream.println(statement);
         try {
             database.update(statement);
+            isLogged = true;
+            return new User(userID, name, username, AuthenticationController.sha256(password), email, phoneNumber);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        isLogged = true;
-        return true;
     }
 
     public boolean getIsLogged() {
@@ -96,7 +103,6 @@ public class AuthenticationController extends Controller {
         isAdmin = false;
         return true;
     }
-
 
     private int getLatestUserID() {
         String statement = "SELECT NVL(MAX(userID), 0) AS maxUserID FROM Users";

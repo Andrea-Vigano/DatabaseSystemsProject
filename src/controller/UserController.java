@@ -44,7 +44,7 @@ public class UserController extends Controller {
 
     public boolean comparePasswords(String password) {
         String passwordHash = AuthenticationController.sha256(password);
-        String statement = "UPDATE Users "
+        String statement = "UPDATE Users ";
         return true;
     }
 
