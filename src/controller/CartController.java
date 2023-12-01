@@ -7,8 +7,11 @@ import model.ShoppingCart;
 import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 
 public class CartController extends Controller {
     public CartController(PrintStream printStream, Database database, SQLManager sqlManager) {
@@ -66,7 +69,7 @@ public class CartController extends Controller {
         String statement = sqlManager.getInsertStatement(
                 "Orders",
                 new String[] { "dateCreated", "userID", "addressID" },
-                new String[] { String.valueOf(new Date()), convert(userId), convert(shippingAddressId) }
+                new String[] { convert(String.valueOf(new Date(System.currentTimeMillis()))), convert(userId), convert(shippingAddressId) }
         );
         try {
             ArrayList<String> keys = database.insertAndGetKeys(statement);
@@ -117,26 +120,34 @@ public class CartController extends Controller {
     }
 
     public boolean add(String id, int quantity, String userId) {
+        int newID = getLastedCartID();
         int currentQuantity = getCurrentQuantity(id);
         if (currentQuantity < quantity || currentQuantity == -1) return false;
-        String insertStatement = sqlManager.getInsertStatement(
-                "ShoppingCart",
-                new String[] { "quantity", "dateAdded", "userID", "productID" },
-                new String[] { Integer.toString(quantity), String.valueOf(new Date()), convert(userId), convert(id) }
-        );
+        // Get the current date and time
+        LocalDateTime now = LocalDateTime.now();
+        // Define the Oracle SQL date format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // Format the current date and time
+        String formattedDateTime = now.format(formatter);
+
+        String insertStatement = "INSERT INTO ShoppingCart (cartID, quantity, dateAdded, userID, productID) " +
+                "VALUES (" + convert(String.valueOf(newID)) + ", " + Integer.toString(quantity) +
+                ", TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " +
+                convert(userId) + ", " + convert(id) + ")";
+
         String updateStatement = sqlManager.getUpdateStatement(
                 "Product",
                 new String[] { "quantity" },
                 new String[] { String.valueOf(currentQuantity - quantity) },
                 "productID = " + id
         );
+        printStream.println(insertStatement);
+        printStream.println(updateStatement);
         try {
             database.update(insertStatement);
             database.update(updateStatement);
-            database.commit();
-        } catch (SQLException ignored) {
-            database.abort();
-            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return true;
     }
@@ -153,5 +164,18 @@ public class CartController extends Controller {
             }
         } catch (SQLException ignored) { }
         return -1;
+    }
+
+    private int getLastedCartID() {
+        String statement = "SELECT NVL(MAX(productID), 0) AS maxCartID FROM ShoppingCart";
+        try {
+            ResultSet results = database.query(statement);
+            if (results.next()) {
+                return results.getInt("maxCartID") + 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 1;
     }
 }

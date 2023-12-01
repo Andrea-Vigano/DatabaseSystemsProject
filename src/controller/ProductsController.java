@@ -68,7 +68,7 @@ public class ProductsController extends Controller {
         String[] tables = new String[]{ "Product", "Category", "Admin" };
         String[] fields = new String[]{
                 "Product.productID",
-                "Product.name",
+                "Product.name AS productName",
                 "Product.description",
                 "Product.price",
                 "Product.brand",
@@ -76,23 +76,24 @@ public class ProductsController extends Controller {
                 "Product.supplier",
                 "Product.warehouse",
                 "Product.review",
-                "Category.name",
+                "Category.name AS categoryName",
                 "Category.categoryID",
                 "Admin.adminID"
         };
         String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
 
-        if (!Objects.equals(category, "")) where += " AND Category.name = " + category;
-        if (!Objects.equals(brand, "")) where += " AND Category.brand = " + brand;
+        if (!Objects.equals(category, "")) where += " AND Category.name = " + convert(category);
+        if (!Objects.equals(brand, "")) where += " AND Product.brand = " + convert(brand);
         if (lowestPrice != 0.0) where += " AND Product.price > " + lowestPrice;
         if (highestPrice != 0.0) where += " AND Product.price < " + highestPrice;
 
         String statement = sqlManager.getSelectStatement(tables, fields, where);
+        printStream.println(statement);
         try {
             ResultSet results = database.query(statement);
             int i = 0;
             while (results.next()) {
-                String id = results.getString("Product.productID");
+                String id = results.getString("productID");
                 i = printProduct(id, results, i);
             }
             if (i == 0) {
