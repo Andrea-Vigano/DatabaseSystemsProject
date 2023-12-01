@@ -14,7 +14,7 @@ public class ReportingController extends Controller {
         super(printStream, database, sqlManager);
     }
 
-    public void generateRevenueReport(String adminID){
+    public boolean generateRevenueReport(String adminID){
         try{
             String query = "SELECT SUM(revenue) AS totalRevenue FROM Report WHERE adminID = ?";
             PreparedStatement preparedStatement = sqlManager.prepareStatement(query);
@@ -33,9 +33,10 @@ public class ReportingController extends Controller {
         catch(SQLException e){
             printStream.println("Error occurred while generating revenue report: " + e.getMessage());
         }
+        return false;
     }
 
-    public void generateSalesReport(String adminID){
+    public boolean generateSalesReport(String adminID){
         try{
             String query = "SELECT COUNT(*) AS totalSales FROM OrderLineItems WHERE adminID = ?";
             PreparedStatement preparedStatement = sqlManager.prepareStatement(query);
@@ -54,9 +55,10 @@ public class ReportingController extends Controller {
         catch(SQLException e){
             printStream.println("Error occurred while generating sales report: " + e.getMessage());
         }
+        return false;
     }
 // For report within date range
-public void generateOrderReport(Date startDate, Date endDate) {
+public boolean generateOrderReport(Date startDate, Date endDate) {
     try {
         String query = "SELECT COUNT(*) AS totalOrders FROM Orders WHERE dateCreated BETWEEN ? AND ?";
         PreparedStatement preparedStatement = sqlManager.prepareStatement(query);
@@ -76,5 +78,6 @@ public void generateOrderReport(Date startDate, Date endDate) {
     } catch (SQLException e) {
         printStream.println("Error occurred while generating order report: " + e.getMessage());
     }
+    return false;
 }
 }

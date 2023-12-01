@@ -7,6 +7,7 @@ import model.User;
 
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.sql.Date;
 
 public class MainController extends Controller {
     private final AuthenticationController authenticationController;
@@ -15,7 +16,6 @@ public class MainController extends Controller {
     private final CartController cartController;
 
     private final ReportingController reportingController;
-
     public MainController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
         this.authenticationController = new AuthenticationController(printStream, database, sqlManager);
@@ -162,5 +162,16 @@ public class MainController extends Controller {
         try {
             database.closeConnection();
         } catch (SQLException ignored) { }
+    }
+    public boolean generateRevenueReport() {
+        return reportingController.generateRevenueReport(authenticationController.getAdminID());
+    }
+
+    public boolean generateSalesReport() {
+        return reportingController.generateSalesReport(authenticationController.getAdminID());
+    }
+
+    public boolean generateOrderReport(Date startDate, Date endDate) {
+        return reportingController.generateOrderReport(startDate, endDate);
     }
 }
