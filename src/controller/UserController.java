@@ -7,6 +7,7 @@ import model.User;
 import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class UserController extends Controller {
@@ -23,7 +24,7 @@ public class UserController extends Controller {
         );
         try {
             database.update(statement);
-            database.commit();
+            // database.commit();
         } catch (SQLException e) {
             database.abort();
             return false;
@@ -35,7 +36,7 @@ public class UserController extends Controller {
         String statement = sqlManager.getDeleteStatement("Address", "address_id=" + id);
         try {
             database.update(statement);
-            database.commit();
+            // database.commit();
         } catch (SQLException e) {
             database.abort();
             return false;
@@ -77,10 +78,12 @@ public class UserController extends Controller {
                 new String[] { passwordHash },
                 "userID = " + this.user.getUserId()
         );
+        printStream.println(statement);
         try {
             database.update(statement);
-            database.commit();
+            //database.commit();
         } catch (SQLException e) {
+            printStream.println(e.getMessage() + '\n' + Arrays.toString(e.getStackTrace()));
             database.abort();
             return false;
         }

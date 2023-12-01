@@ -358,20 +358,20 @@ public class CommandParser {
         printStream.print("Enter your choice: ");
         int choice = Integer.parseInt(scanner.nextLine());
         String adminID="1";
-        switch (choice) {
-            case 1:
-                controller.generateRevenueReport(adminID);
-                break;
-            case 2:
-                controller.generateSalesReport(adminID);
-                break;
-            case 3:
-                controller.generateOrderReport(startDate, endDate);
-                break;
-            default:
-                printStream.println("Invalid choice. Please select a valid option.");
-                break;
-        }
+//        switch (choice) {
+//            case 1:
+//                controller.generateRevenueReport(adminID);
+//                break;
+//            case 2:
+//                controller.generateSalesReport(adminID);
+//                break;
+//            case 3:
+//                controller.generateOrderReport(startDate, endDate);
+//                break;
+//            default:
+//                printStream.println("Invalid choice. Please select a valid option.");
+//                break;
+//        }
 
 
     }
