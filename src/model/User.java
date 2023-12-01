@@ -1,7 +1,7 @@
 package model;
 
 public class User {
-    private int userID;
+    private String userID;
     private String name;
     private String username;
     private String passwordHash;
@@ -9,7 +9,7 @@ public class User {
     private String address;
     private String phoneNumber;
 
-    public User(int userID, String name, String username, String passwordHash, String email, String phoneNumber) {
+    public User(String userID, String name, String username, String passwordHash, String email, String phoneNumber) {
         this.userID = userID;
         this.name = name;
         this.username = username;
@@ -20,11 +20,11 @@ public class User {
 
     // Getters and setters
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 

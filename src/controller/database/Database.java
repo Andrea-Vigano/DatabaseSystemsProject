@@ -22,7 +22,7 @@ public class Database {
     }
 
     private Database() throws SQLException {
-        // connect();
+        connect();
     }
 
     private void connect() throws SQLException {

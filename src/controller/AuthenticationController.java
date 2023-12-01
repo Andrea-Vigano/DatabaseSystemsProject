@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class AuthenticationController extends Controller {
     private boolean isLogged = false;
@@ -25,17 +26,25 @@ public class AuthenticationController extends Controller {
         String where = "username=" + "'" + username + "'" + " AND passwordHash=" + "'" + passwordHash + "'";
         String statement = sqlManager.getSelectStatement(
                 new String[]{"Users"},
-                new String[]{ "COUNT(*) AS count", "userID", "name", "username", "passwordHash", "email", "phoneNumber" },
+                new String[]{"userID", "name", "username", "passwordHash", "email", "phoneNumber" },
+                where
+        );
+        String checkStatement = sqlManager.getSelectStatement(
+                new String[]{"Users"},
+                new String[]{ "COUNT(*) AS count"},
                 where
         );
         printStream.println(statement);
+        printStream.println(checkStatement);
         try {
             ResultSet results = database.query(statement);
-            if (results.next()) {
-                int count = results.getInt("count");
+            ResultSet cntResults = database.query(checkStatement);
+
+            if (results.next() && cntResults.next()) {
+                int count = cntResults.getInt("count");
                 if (count == 1) {
                     isLogged = true;
-                    int userID = results.getInt("userID");
+                    String userID = results.getString("userID");
                     String name = results.getString("name");
                     String _username = results.getString("username");
                     String _passwordHash = results.getString("passwordHash");
@@ -54,14 +63,21 @@ public class AuthenticationController extends Controller {
         String passwordHash = AuthenticationController.sha256(password);
         String where = "username=" + "'" + username + "'" + " AND passwordHash=" + "'" + passwordHash + "'";
         String statement = sqlManager.getSelectStatement(
+                new String[]{"Users"},
+                new String[]{"userID", "name", "username", "passwordHash", "email", "phoneNumber" },
+                where
+        );
+        String checkStatement = sqlManager.getSelectStatement(
                 new String[]{"Admin"},
                 new String[]{"COUNT(*) AS count"},
                 where
         );
         printStream.println(statement);
+        printStream.println(checkStatement);
         try {
             ResultSet results = database.query(statement);
-            if (results.next()) {
+            ResultSet cntResults = database.query(checkStatement);
+            if (results.next() && cntResults.next()) {
                 int count = results.getInt("count");
                 if (count == 1) {
                     isLogged = true;
@@ -84,7 +100,7 @@ public class AuthenticationController extends Controller {
         try {
             database.update(statement);
             isLogged = true;
-            return new User(userID, name, username, AuthenticationController.sha256(password), email, phoneNumber);
+            return new User(Objects.toString(userID), name, username, AuthenticationController.sha256(password), email, phoneNumber);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
