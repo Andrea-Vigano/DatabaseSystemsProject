@@ -1,6 +1,18 @@
 package controller.database;
+import java.sql.*;
 
 public class SQLManager {
+
+    private Connection connection;
+    public SQLManager() { this.connection= connection;}
+
+    public ResultSet executeQuery(String query) throws SQLException{
+        Statement statement= connection.createStatement();
+        return statement.executeQuery(query);
+    }
+    public PreparedStatement prepareStatement(String query) throws SQLException {
+        return connection.prepareStatement(query);
+    }
     public String getSelectStatement(String table, String[] fields, String where) {
         StringBuilder statement = new StringBuilder("SELECT ");
         for (int i = 0; i < fields.length; i++) {
