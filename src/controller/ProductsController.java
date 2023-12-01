@@ -32,11 +32,11 @@ public class ProductsController extends Controller {
         String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
         String statement = sqlManager.getSelectStatement(tables, fields, where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
@@ -63,11 +63,11 @@ public class ProductsController extends Controller {
 
         String statement = sqlManager.getSelectStatement(tables, fields, where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
@@ -88,11 +88,11 @@ public class ProductsController extends Controller {
         String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
         String statement = sqlManager.getSelectStatement(tables, fields, where);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
@@ -114,22 +114,22 @@ public class ProductsController extends Controller {
                 new String[] {String.valueOf(productCnt++), name, description, Objects.toString(price), brand, Objects.toString(quantity), supplier, warehouse, review, categoryId, adminId }
         );
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.update(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
     public boolean delete(String productID) {
         String statement = sqlManager.getDeleteStatement("Product", "productID=" + productID);
         printStream.println(statement);
-        //        try {
-//            ResultSet results = database.update(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+                try {
+            ResultSet results = database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
@@ -194,11 +194,11 @@ public class ProductsController extends Controller {
                 "productID=" + productID
         );
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.update(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
@@ -209,11 +209,11 @@ public class ProductsController extends Controller {
     public boolean getCategory(String name) {
         String statement = sqlManager.getSelectStatement("Category", new String[] { "category_id" }, "name=" + name);
         printStream.println(statement);
-//        try {
-//            ResultSet results = database.query(statement);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            ResultSet results = database.query(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 }

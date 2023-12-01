@@ -107,7 +107,7 @@ public class MainController extends Controller {
             String categoryId,
             String adminId
     ) {
-        return productsController.add(name, description, price, brand, brand, quantity, supplier, warehouse, review, categoryId, adminId);
+        return productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, adminId);
     }
 
     public boolean updateProduct(
