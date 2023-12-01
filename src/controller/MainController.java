@@ -14,13 +14,14 @@ public class MainController extends Controller {
     private final CartController cartController;
 
     private final ReportingController reportingController;
+
     public MainController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
         this.authenticationController = new AuthenticationController(printStream, database, sqlManager);
         this.productsController = new ProductsController(printStream, database, sqlManager);
         this.userController = new UserController(printStream, database, sqlManager);
         this.cartController = new CartController(printStream, database, sqlManager);
-        this.reportingController= new ReportingController(printStream, database, sqlManager);
+        this.reportingController = new ReportingController(printStream, database, sqlManager);
     }
 
     public boolean logIn(String username, String password) {
