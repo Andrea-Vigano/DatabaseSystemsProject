@@ -220,7 +220,6 @@ public class CommandParser {
     }
 
     private void performAddProduct() {
-        // TODO Add non-mandatory fields options
         printStream.print("Insert product name: ");
         String name = scanner.nextLine();
         printStream.print("Insert product description: ");
@@ -239,9 +238,8 @@ public class CommandParser {
         String review = scanner.nextLine();
         printStream.print("Insert category name: ");
         String category = scanner.nextLine();
-        // change return type ...
-        boolean categoryId = this.controller.getCategoryId(category);
-        // ...
+        String categoryId = this.controller.getCategoryId(category);
+        boolean result = this.controller.addProduct(name, description, price, brand, quantity, supplier, warehouse, review, categoryId);
     }
 
     private void performUpdateProduct() {

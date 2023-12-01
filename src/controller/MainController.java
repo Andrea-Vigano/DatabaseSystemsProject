@@ -107,10 +107,9 @@ public class MainController extends Controller {
             String supplier,
             String warehouse,
             String review,
-            String categoryId,
-            String adminId
+            String categoryId
     ) {
-        return productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, adminId);
+        return productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, this.authenticationController.getAdminID());
     }
 
     public boolean updateProduct(
