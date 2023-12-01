@@ -2,8 +2,10 @@ package commandparser;
 
 import controller.AuthenticationController;
 import controller.MainController;
+import controller.ReportingController;
 
 import java.io.PrintStream;
+import java.sql.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -59,7 +61,7 @@ public class CommandParser {
         } else if (command.isExit()) {
             this.printStream.println("Quitting");
             this.controller.trySmoothExit();
-            // Main loop will break on its own in App class
+            // Main loop will break on its own in-App class
         } else {
             this.printStream.println("Unknown command, type 'help' for usage information");
         }
@@ -227,7 +229,7 @@ public class CommandParser {
         double price = Double.parseDouble(scanner.nextLine());
         printStream.print("Insert product brand: ");
         String brand = scanner.nextLine();
-        printStream.print("Insert product quanity: ");
+        printStream.print("Insert product quantity: ");
         int quantity = Integer.parseInt(scanner.nextLine());
         printStream.print("Insert product supplier name: ");
         String supplier = scanner.nextLine();
@@ -343,6 +345,34 @@ public class CommandParser {
     }
 
     private void performGenerateReport() {
+        printStream.println("Insert the start date (YYYY-MM-DD): ");
+        Date startDate = Date.valueOf(scanner.nextLine());
+        printStream.println("Insert the end date (YYYY-MM-DD): ");
+        Date endDate = Date.valueOf(scanner.nextLine());
+
+
+        printStream.println("Select the type of report:\n" +
+                "1. Revenue Report \n" +
+                "2. Sales Report \n" +
+                "3. Order Report ");
+        printStream.print("Enter your choice: ");
+        int choice = Integer.parseInt(scanner.nextLine());
+        String adminID="1";
+//        switch (choice) {
+//            case 1:
+//                controller.generateRevenueReport(adminID);
+//                break;
+//            case 2:
+//                controller.generateSalesReport(adminID);
+//                break;
+//            case 3:
+//                controller.generateOrderReport(startDate, endDate);
+//                break;
+//            default:
+//                printStream.println("Invalid choice. Please select a valid option.");
+//                break;
+//        }
+
 
     }
 

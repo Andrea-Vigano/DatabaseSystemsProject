@@ -19,16 +19,16 @@ public class SQLManager {
             statement.append(fields[i]);
             if (i != fields.length - 1) statement.append(", ");
         }
-        statement.append(" FROM ").append(table).append(" WHERE ").append(where).append(";");
+        statement.append(" FROM ").append(table).append(" WHERE ").append(where);
         return statement.toString();
     }
 
     public String getSelectStatement(String table, String where) {
-        return "SELECT * FROM " + table + " WHERE " + where + ";";
+        return "SELECT * FROM " + table + " WHERE " + where;
     }
 
     public String getSelectStatement(String table) {
-        return "SELECT * FROM " + table + ";";
+        return "SELECT * FROM " + table;
     }
 
     public String getSelectStatement(String table, String[] fields) {
@@ -37,7 +37,7 @@ public class SQLManager {
             statement.append(fields[i]);
             if (i != fields.length - 1) statement.append(", ");
         }
-        statement.append(" FROM ").append(table).append(";");
+        statement.append(" FROM ").append(table);
         return statement.toString();
     }
 
@@ -88,26 +88,25 @@ public class SQLManager {
             statement.append(")");
             if (j != fields.length - 1) statement.append(",");
         }
-        statement.append(";");
 
         return statement.toString();
     }
 
     public String getDeleteStatement(String table, String where) {
-        return "DELETE FROM " + table + " WHERE " + where + ";";
+        return "DELETE FROM " + table + " WHERE " + where;
     }
 
     public String getFlushStatement(String table) {
-        return "DELETE FROM " + table + ";";
+        return "DELETE FROM " + table;
     }
 
     public String getUpdateStatement(String table, String[] columns, String[] fields, String where) {
         StringBuilder statement = new StringBuilder("UPDATE ").append(table).append(" SET ");
         for (int i = 0; i < columns.length || i < fields.length; i++) {
-            statement.append(columns[i]).append("=").append(fields[i]);
+            statement.append(columns[i]).append("=").append("'" + fields[i] + "'");
             if (i != fields.length - 1 && i != columns.length - 1) statement.append(", ");
         }
-        statement.append(" WHERE ").append(where).append(";");
+        statement.append(" WHERE ").append(where);
         return statement.toString();
     }
 }

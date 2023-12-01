@@ -15,5 +15,6 @@ public abstract class Controller {
         this.sqlManager = sqlManager;
         this.printStream = printStream;
     }
-
 }
+
+
