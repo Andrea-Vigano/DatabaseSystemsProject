@@ -2,6 +2,7 @@ package controller;
 
 import controller.database.Database;
 import controller.database.SQLManager;
+import model.User;
 
 import java.io.PrintStream;
 import java.sql.SQLException;
@@ -22,19 +23,33 @@ public class MainController extends Controller {
     // TODO add User to UserController after login, remove after logout and keep in sync after each update
 
     public boolean logIn(String username, String password) {
-        return authenticationController.logIn(username, password);
+        User user = authenticationController.logIn(username, password);
+        if (user != null) {
+            userController.setUser(user);
+            return true;
+        }
+        return false;
     }
 
     public boolean adminLogIn(String username, String password) {
         return authenticationController.adminLogIn(username, password);
     }
 
-    public boolean signUp(String name, String username, String password, String email, String address, String phoneNumber) {
-        return authenticationController.singUp(name, username, password, email, address, phoneNumber);
+    public boolean signUp(String name, String username, String password, String email, String phoneNumber) {
+        User user = authenticationController.singUp(name, username, password, email, phoneNumber);
+        if (user != null) {
+            userController.setUser(user);
+            return true;
+        }
+        return false;
     }
 
     public boolean logOut() {
-        return authenticationController.logOut();
+        boolean result = authenticationController.logOut();
+        if (result) {
+            userController.setUser(null);
+        }
+        return result;
     }
 
     public boolean isLogged() {

@@ -125,11 +125,9 @@ public class CommandParser {
         }
         printStream.print("Insert your email: ");
         String email = scanner.nextLine();
-        printStream.print("Insert your address: ");
-        String address = scanner.nextLine();
         printStream.print("Insert your phone number: ");
         String phoneNumber = scanner.nextLine();
-        boolean result = this.controller.signUp(name, username, password, email, address, phoneNumber);
+        boolean result = this.controller.signUp(name, username, password, email, phoneNumber);
         if (result) printStream.println("Successfully signed up");
         else printStream.println("Unable to sign up");
     }
