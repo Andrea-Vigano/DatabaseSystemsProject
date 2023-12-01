@@ -64,7 +64,7 @@ public class SQLManager {
         }
         statement.append(") VALUES (");
         for (int i = 0; i < fields.length; i++) {
-            statement.append("'" + fields[i] + "'");
+            statement.append(fields[i]);
             if (i != fields.length - 1) statement.append(", ");
         }
         statement.append(")");

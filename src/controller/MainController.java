@@ -2,6 +2,7 @@ package controller;
 
 import controller.database.Database;
 import controller.database.SQLManager;
+import model.Product;
 import model.User;
 
 import java.io.PrintStream;
@@ -109,7 +110,12 @@ public class MainController extends Controller {
             String review,
             String categoryId
     ) {
-        return productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, this.authenticationController.getAdminID());
+        Product product = productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, this.authenticationController.getAdminID());
+        if(product != null){
+            productsController.setProduct(product);
+            return true;
+        }
+        return false;
     }
 
     public boolean updateProduct(

@@ -23,6 +23,7 @@ public class Database {
 
     private Database() throws SQLException {
         connect();
+        System.out.println("Connected to DB");
     }
 
     private void connect() throws SQLException {
@@ -43,6 +44,11 @@ public class Database {
         return statement.executeQuery(sqlStatement);
     }
 
+    public void insert(String sqlStatement) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.execute (sqlStatement);
+        statement.execute("COMMIT");
+    }
     public void update(String sqlStatement) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate(sqlStatement);

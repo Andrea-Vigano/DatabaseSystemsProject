@@ -238,8 +238,10 @@ public class CommandParser {
         String review = scanner.nextLine();
         printStream.print("Insert category name: ");
         String category = scanner.nextLine();
-        String categoryId = this.controller.getCategoryId(category);
-        boolean result = this.controller.addProduct(name, description, price, brand, quantity, supplier, warehouse, review, categoryId);
+        String categoryID = this.controller.getCategoryId(category);
+        boolean result = this.controller.addProduct(name, description, price, brand, quantity, supplier, warehouse, review, categoryID);
+        if (result) printStream.println("Successfully added product");
+        else printStream.println("Unable to add product");
     }
 
     private void performUpdateProduct() {

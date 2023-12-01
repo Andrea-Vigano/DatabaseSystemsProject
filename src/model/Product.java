@@ -13,6 +13,31 @@ public class Product {
     private int quantity;
     private String adminID;
 
+    public Product(
+            String productID,
+            String name,
+            String description,
+            double price,
+            String brand,
+            int quantity,
+            String supplier,
+            String warehouse,
+            String review,
+            String categoryId,
+            String adminId
+    ){
+        this.productID = productID;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.brand = brand;
+        this.quantity = quantity;
+        this.supplier = supplier;
+        this.warehouse = warehouse;
+        this.review = review;
+        this.categoryID = categoryId;
+        this.adminID = adminId;
+    }
 
     // Getters and setters
 

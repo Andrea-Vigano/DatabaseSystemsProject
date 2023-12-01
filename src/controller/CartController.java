@@ -66,7 +66,7 @@ public class CartController extends Controller {
         String statement = sqlManager.getInsertStatement(
                 "Orders",
                 new String[] { "dateCreated", "userID", "addressID" },
-                new String[] { String.valueOf(new Date()), userId, shippingAddressId }
+                new String[] { String.valueOf(new Date()), convert(userId), convert(shippingAddressId) }
         );
         try {
             ArrayList<String> keys = database.insertAndGetKeys(statement);
@@ -122,7 +122,7 @@ public class CartController extends Controller {
         String insertStatement = sqlManager.getInsertStatement(
                 "ShoppingCart",
                 new String[] { "quantity", "dateAdded", "userID", "productID" },
-                new String[] { Integer.toString(quantity), String.valueOf(new Date()), userId, id }
+                new String[] { Integer.toString(quantity), String.valueOf(new Date()), convert(userId), convert(id) }
         );
         String updateStatement = sqlManager.getUpdateStatement(
                 "Product",

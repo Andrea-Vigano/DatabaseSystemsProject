@@ -10,6 +10,10 @@ public abstract class Controller {
     protected final SQLManager sqlManager;
     protected final PrintStream printStream;
 
+    protected String convert(String val){
+        return "'" + val + "'";
+    }
+
     public Controller(PrintStream printStream, Database database, SQLManager sqlManager) {
         this.database = database;
         this.sqlManager = sqlManager;

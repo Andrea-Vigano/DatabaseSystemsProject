@@ -3,17 +3,26 @@ package controller;
 import controller.database.Database;
 import controller.database.SQLManager;
 import model.Category;
+import model.Product;
 
 import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
 
+
 public class ProductsController extends Controller {
+
+    private Product product;
 
     public ProductsController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
+    }
+
+    public void setProduct(Product product){
+        this.product = product;
     }
 
     public boolean list() {
@@ -34,8 +43,9 @@ public class ProductsController extends Controller {
         };
         String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
         String statement = sqlManager.getSelectStatement(tables, fields, where);
+        printStream.println(statement);
         try {
-            ResultSet results = database.query(statement);
+            ResultSet results = database.query("SELECT Product.productID FROM Product");
             int i = 0;
             while (results.next()) {
                 String id = results.getString("Product.productID");
@@ -44,6 +54,7 @@ public class ProductsController extends Controller {
             if (i == 0) {
                 printStream.println("No products to show");
             }
+            results.close();
         } catch (SQLException e) {
             return false;
         }
@@ -90,7 +101,7 @@ public class ProductsController extends Controller {
         return true;
     }
 
-    public boolean add(
+    public Product add(
             String name,
             String description,
             double price,
@@ -106,15 +117,18 @@ public class ProductsController extends Controller {
         String statement = sqlManager.getInsertStatement(
                 "Product",
                 new String[] { "productID", "name", "description", "price", "brand", "quantity", "supplier", "warehouse", "review", "categoryID", "adminID" },
-                new String[] {Integer.toString(id), name, description, Objects.toString(price), brand, Objects.toString(quantity), supplier, warehouse, review, categoryId, adminId }
+                new String[] {convert(Integer.toString(id)), convert(name), convert(description), Objects.toString(price),
+                        convert(brand), Objects.toString(quantity), convert(supplier), convert(warehouse), convert(review),
+                        convert(categoryId), convert(adminId) }
         );
+        printStream.println(statement);
         try {
             database.update(statement);
+            return new Product(Integer.toString(id), name, description, price, brand, quantity,
+                    supplier, warehouse, review, categoryId, adminId);
         } catch (SQLException e) {
-            database.abort();
-            return false;
+            throw new RuntimeException(e);
         }
-        return true;
     }
 
     public boolean delete(String productID) {
@@ -248,7 +262,7 @@ public class ProductsController extends Controller {
     }
 
     public String getCategory(String name) {
-        String statement = sqlManager.getSelectStatement("Category", new String[] { "categoryID" }, "name=" + name);
+        String statement = sqlManager.getSelectStatement("Category", new String[] { "categoryID" }, "name=" +  "'" + name + "'");
         printStream.println(statement);
         try {
             ResultSet results = database.query(statement);

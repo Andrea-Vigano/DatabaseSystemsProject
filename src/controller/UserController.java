@@ -20,7 +20,7 @@ public class UserController extends Controller {
         String statement = sqlManager.getInsertStatement(
             "Address",
             new String[] { "address", "userID" },
-            new String[] { address, this.user.getUserID() }
+            new String[] { convert(address), convert(this.user.getUserID()) }
         );
         try {
             database.update(statement);

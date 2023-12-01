@@ -40,8 +40,6 @@ public class AuthenticationController extends Controller {
                 new String[]{ "COUNT(*) AS count"},
                 where
         );
-        printStream.println(statement);
-        printStream.println(checkStatement);
         try {
             ResultSet results = database.query(statement);
             ResultSet cntResults = database.query(checkStatement);
@@ -59,6 +57,8 @@ public class AuthenticationController extends Controller {
                     return new User(userID, name, _username, _passwordHash, email, phoneNumber);
                 }
             }
+            results.close();
+            cntResults.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -78,8 +78,6 @@ public class AuthenticationController extends Controller {
                 new String[]{"COUNT(*) AS count"},
                 where
         );
-        printStream.println(statement);
-        printStream.println(checkStatement);
         try {
             ResultSet results = database.query(statement);
             ResultSet cntResults = database.query(checkStatement);
@@ -92,6 +90,8 @@ public class AuthenticationController extends Controller {
                     return true;
                 }
             }
+            results.close();
+            cntResults.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -101,7 +101,7 @@ public class AuthenticationController extends Controller {
     public User singUp(String name, String username, String password, String email, String phoneNumber) {
         int userID = getLatestUserID();
         String[] columns = new String[]{"userID" ,"name", "username", "passwordHash", "email", "phoneNumber" };
-        String[] fields = new String[]{String.valueOf(userID), name, username, AuthenticationController.sha256(password), email, phoneNumber };
+        String[] fields = new String[]{convert(String.valueOf(userID)), convert(name), convert(username), convert(AuthenticationController.sha256(password)), convert(email), convert(phoneNumber) };
         String statement = sqlManager.getInsertStatement("Users", columns, fields);
         printStream.println(statement);
         try {
