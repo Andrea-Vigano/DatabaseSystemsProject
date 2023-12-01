@@ -101,7 +101,7 @@ public class ProductsController extends Controller {
             String description,
             double price,
             String brand,
-            String s, int quantity,
+            int quantity,
             String supplier,
             String warehouse,
             String review,

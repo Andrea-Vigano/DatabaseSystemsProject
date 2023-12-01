@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Database {
     private static OracleConnection connection;
 
-    private static final String username = "\"22096786d\"";
+    private static final String username = "\" \"";
     private static final String password = "vutgbdgo";
     private static final String url = "jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms";
     private static final Database instance;

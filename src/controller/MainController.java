@@ -20,7 +20,6 @@ public class MainController extends Controller {
         this.userController = new UserController(printStream, database, sqlManager);
         this.cartController = new CartController(printStream, database, sqlManager);
     }
-    // TODO add User to UserController after login, remove after logout and keep in sync after each update
 
     public boolean logIn(String username, String password) {
         User user = authenticationController.logIn(username, password);
@@ -108,7 +107,7 @@ public class MainController extends Controller {
             String categoryId,
             String adminId
     ) {
-        return productsController.add(name, description, price, brand, brand, quantity, supplier, warehouse, review, categoryId, adminId);
+        return productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, adminId);
     }
 
     public boolean updateProduct(
