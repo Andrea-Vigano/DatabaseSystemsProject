@@ -127,7 +127,7 @@ public class MainController extends Controller {
             Integer quantity,
             String supplier,
             String warehouse,
-            String review,
+            Double review,
             String categoryId,
             String adminId
     ) {

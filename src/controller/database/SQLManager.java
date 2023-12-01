@@ -103,7 +103,7 @@ public class SQLManager {
     public String getUpdateStatement(String table, String[] columns, String[] fields, String where) {
         StringBuilder statement = new StringBuilder("UPDATE ").append(table).append(" SET ");
         for (int i = 0; i < columns.length || i < fields.length; i++) {
-            statement.append(columns[i]).append("=").append("'" + fields[i] + "'");
+            statement.append(columns[i]).append("=").append(fields[i]);
             if (i != fields.length - 1 && i != columns.length - 1) statement.append(", ");
         }
         statement.append(" WHERE ").append(where);

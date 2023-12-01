@@ -49,7 +49,6 @@ public class ProductsController extends Controller {
         printStream.println(statement);
         try {
             ResultSet results = database.query(statement);
-            printStream.println(results);
             int i = 0;
             while (results.next()) {
                 String id = results.getString("productID");
@@ -156,7 +155,7 @@ public class ProductsController extends Controller {
             Integer quantity,
             String supplier,
             String warehouse,
-            String review,
+            Double review,
             String categoryId,
             String adminId
     ) {
@@ -164,49 +163,50 @@ public class ProductsController extends Controller {
         ArrayList<String> fields = new ArrayList<>();
         if (name != null) {
             columns.add("name");
-            fields.add(name);
+            fields.add(convert(name));
         }
         if (description != null) {
             columns.add("description");
-            fields.add(description);
+            fields.add(convert(description));
         }
-        if (price != null) {
+        if (price != 0.0) {
             columns.add("price");
             fields.add(Objects.toString(price));
         }
         if (brand != null) {
             columns.add("brand");
-            fields.add(brand);
+            fields.add(convert(brand));
         }
-        if (quantity != null) {
+        if (quantity != 0) {
             columns.add("quantity");
             fields.add(Objects.toString(quantity));
         }
         if (supplier != null) {
-            columns.add("supplier_id");
-            fields.add(supplier);
+            columns.add("supplier");
+            fields.add(convert(supplier));
         }
         if (warehouse != null) {
-            columns.add("warehouseID");
-            fields.add(warehouse);
+            columns.add("warehouse");
+            fields.add(convert(warehouse));
         }
-        if (review != null) {
+        if (review != 0.0) {
             columns.add("review");
-            fields.add(review);
+            fields.add(Objects.toString(review));
         }
         if (categoryId != null) {
             columns.add("categoryID");
-            fields.add(categoryId);
+            fields.add(convert(categoryId));
         }
         if (adminId != null) {
             columns.add("adminID");
-            fields.add(adminId);
+            fields.add(convert(adminId));
         }
         String statement = sqlManager.getUpdateStatement("Product",
                 columns.toArray(new String[]{}),
                 fields.toArray(new String[]{}),
                 "productID=" + productID
         );
+        printStream.println(statement);
         try {
             database.update(statement);
         } catch (SQLException e) {
@@ -220,7 +220,7 @@ public class ProductsController extends Controller {
         String[] tables = new String[]{ "Product", "Category", "Admin" };
         String[] fields = new String[]{
                 "Product.productID",
-                "Product.name",
+                "Product.name AS productName",
                 "Product.description",
                 "Product.price",
                 "Product.brand",
@@ -229,7 +229,7 @@ public class ProductsController extends Controller {
                 "Product.warehouse",
                 "Product.review",
                 "Category.categoryID",
-                "Category.name",
+                "Category.name AS categoryName",
                 "Admin.adminID"
         };
         String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID AND Product.productID = " + id;
@@ -239,7 +239,6 @@ public class ProductsController extends Controller {
             int i = 0;
             while (results.next()) {
                 i = printProduct(id, results, i);
-                printStream.println(i);
             }
             if (i == 0) {
                 printStream.println("No products to show");

@@ -41,7 +41,6 @@ public class Database {
 
     public ResultSet query(String sqlStatement) throws SQLException {
         Statement statement = connection.createStatement();
-        System.out.println(statement);
         return statement.executeQuery(sqlStatement);
     }
 

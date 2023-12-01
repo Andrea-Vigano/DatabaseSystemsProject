@@ -248,8 +248,8 @@ public class CommandParser {
         // TODO enhance update options
         printStream.print("Insert product product id: ");
         String productID = scanner.nextLine();
-        String name = null, description = null, brand = null, supplier = null, warehouse = null, review = null;
-        double price = 0.0;
+        String name = null, description = null, brand = null, supplier = null, warehouse = null;
+        double price = 0.0, review = 0.0;
         int quantity = 0;
         String isYes;
         printStream.print("Do you want to update the product name [Y/N]? ");
@@ -298,7 +298,7 @@ public class CommandParser {
         isYes = scanner.nextLine().toLowerCase();
         if (Objects.equals(isYes, "y")) {
             printStream.print("Insert brand: ");
-            review = scanner.nextLine();
+            review = Double.parseDouble(scanner.nextLine());
         }
         boolean result = this.controller.updateProduct(productID, name, description, price, brand, quantity, supplier, warehouse, review, null, null);
         if (result) printStream.println("Successfully updated product with id: " + productID);
