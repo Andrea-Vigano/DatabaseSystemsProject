@@ -25,22 +25,22 @@ public class UserController extends Controller {
                 new String[]{userId, address}
         );
         printStream.println(statement);
-         try {
-             database.update(statement);
-         } catch (SQLException e) {
-             throw new RuntimeException(e);
-         }
-        return true;
-    }
+        try {
+            database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;}
+
 
     public boolean removeShippingAddress(String id) {
         String statement = sqlManager.getDeleteStatement("Address", "address_id=" + id);
         printStream.println(statement);
-         try {
-             database.update(statement);
-         } catch (SQLException e) {
-             throw new RuntimeException(e);
-         }
+        try {
+            database.update(statement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
