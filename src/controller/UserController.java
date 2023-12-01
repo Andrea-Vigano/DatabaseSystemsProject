@@ -17,23 +17,24 @@ public class UserController extends Controller {
     }
 
     public boolean addShippingAddress(String address) {
+        int newID = getLastedAddressID();
         String statement = sqlManager.getInsertStatement(
             "Address",
-            new String[] { "address", "userID" },
-            new String[] { convert(address), convert(this.user.getUserID()) }
+            new String[] { "name", "userID", "addressID" },
+            new String[] { convert(address), convert(this.user.getUserID()), convert(String.valueOf(newID)) }
         );
+        printStream.println(statement);
         try {
             database.update(statement);
             // database.commit();
         } catch (SQLException e) {
-            database.abort();
-            return false;
+            throw new RuntimeException(e);
         }
         return true;
     }
 
     public boolean removeShippingAddress(String id) {
-        String statement = sqlManager.getDeleteStatement("Address", "address_id=" + id);
+        String statement = sqlManager.getDeleteStatement("Address", "addressID=" + id);
         try {
             database.update(statement);
             // database.commit();
@@ -88,6 +89,19 @@ public class UserController extends Controller {
             return false;
         }
         return true;
+    }
+
+    private int getLastedAddressID() {
+        String statement = "SELECT NVL(MAX(addressID), 0) AS maxAddressID FROM Address";
+        try {
+            ResultSet results = database.query(statement);
+            if (results.next()) {
+                return results.getInt("maxAddressID") + 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 1;
     }
 
     public User getUser() {

@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class CartController extends Controller {
     public CartController(PrintStream printStream, Database database, SQLManager sqlManager) {
@@ -30,12 +32,13 @@ public class CartController extends Controller {
         }
     }
 
-    private ArrayList<ShoppingCart> list() throws SQLException {
+    private ArrayList<ShoppingCart> list(String userId) throws SQLException {
         String statement = sqlManager.getSelectStatement(
-                new String[] { "ShoppingCart", "Product" },
-                new String[] { "cartID", "quantity", "dateAdded", "name", "ShoppingCart.productID" },
-                "ShoppingCart.productID = Product.productID"
+                new String[] { "ShoppingCart", "Product", "Users" },
+                new String[] { "ShoppingCart.cartID", "ShoppingCart.quantity", "ShoppingCart.dateAdded", "Product.name", "ShoppingCart.productID", "ShoppingCart.userID" },
+                "ShoppingCart.productID = Product.productID AND ShoppingCart.userID = Users.userID AND ShoppingCart.userID = " + userId
         );
+        printStream.println(statement);
         ArrayList<ShoppingCart> list = new ArrayList<>();
         ResultSet result = database.query(statement);
         while (result.next()) {
@@ -49,63 +52,104 @@ public class CartController extends Controller {
         return list;
     }
 
-    public void show() {
+    private String compareWarehouse(String userId) throws SQLException {
+        String statement = sqlManager.getSelectStatement(
+                new String[] { "ShoppingCart", "Product", "Users" },
+                new String[] { "ShoppingCart.cartID", "ShoppingCart.quantity", "ShoppingCart.productID", "ShoppingCart.userID", "Product.warehouse" },
+                "ShoppingCart.productID = Product.productID AND ShoppingCart.userID = Users.userID AND ShoppingCart.userID = " + userId
+        );
+        printStream.println(statement);
+
+        int max = 0;
+        String res = "";
+        ResultSet result = database.query(statement);
+        while (result.next()) {
+            int quantity = result.getInt("quantity");
+            if(max <= quantity){
+                String warehouse = result.getString("warehouse");
+                max = quantity;
+                res = warehouse;
+            }
+        }
+
+        return res;
+    }
+
+    public void show(String userId) {
         try {
-            ArrayList<ShoppingCart> list = this.list();
-            for (ShoppingCart item : list)
+            ArrayList<ShoppingCart> list = this.list(userId);
+            for (ShoppingCart item : list) {
                 printStream.printf(
-                        "%s. %s. Quantity: %d. Added on: %s%n\n",
+                        "\n%s.%s\n  Quantity: %d\n  Added on: %s%n\n",
                         item.getId(),
                         item.getProductName(),
                         item.getQuantity(),
                         item.getDateAdded()
                 );
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public boolean checkout(String shippingAddressId, String userId) {
-        String statement = sqlManager.getInsertStatement(
-                "Orders",
-                new String[] { "dateCreated", "userID", "addressID" },
-                new String[] { convert(String.valueOf(new Date(System.currentTimeMillis()))), convert(userId), convert(shippingAddressId) }
-        );
+        int newID = getLastedOrderID();
+        String warehouse;
         try {
-            ArrayList<String> keys = database.insertAndGetKeys(statement);
-            if (keys.isEmpty()) {
+            warehouse = this.compareWarehouse(userId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+
+        String insertStatement = "INSERT INTO Orders (orderID, dateCreated, warehouse, userID, addressID) " +
+                "VALUES (" + convert(Objects.toString(newID)) + ", " +
+                "TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " + convert(warehouse) + ", " +
+                convert(userId) + ", " + convert(shippingAddressId) + ")";
+//        String statement = sqlManager.getInsertStatement(
+//                "Orders",
+//                new String[]{"dateCreated", "userID", "addressID"},
+//                new String[]{convert(String.valueOf(new Date(System.currentTimeMillis()))), convert(userId), convert(shippingAddressId)}
+//        );
+        printStream.println(insertStatement);
+        try {
+            if (newID == 0) {
                 database.abort();
                 return false;
             }
+            int orderLineItemsID = getLastedOrderLineItemsID();
+            String orderId = String.valueOf(newID);
+            ArrayList<ShoppingCart> list = this.list(userId);
 
-            String orderId = keys.get(0);
-            ArrayList<ShoppingCart> list = this.list();
+            String[][] fields = new String[list.size()][4];
 
-            String[][] fields = new String[list.size()][3];
-
-            for (int i = 0; i < list().size(); i++) {
-                fields[i][0] = String.valueOf(list.get(i).getQuantity());
-                fields[i][1] = list.get(i).getProductID();
-                fields[i][2] = orderId;
+            for (int i = 0; i < list(userId).size(); i++) {
+                fields[i][0] = convert(String.valueOf(i + 1));
+                fields[i][1] = String.valueOf(list.get(i).getQuantity());
+                fields[i][2] = convert(list.get(i).getProductID());
+                fields[i][3] = convert(orderId);
             }
-            statement = sqlManager.getInsertStatement(
-                    "OrderLineItems",
-                    new String[] { "quantity", "productID", "orderID" },
-                    fields
-            );
-
-            database.update(statement);
+            printStream.println(Arrays.deepToString(fields));
+            for(int i = 0; i < fields.length; i++){
+                String statement = sqlManager.getInsertStatement(
+                        "OrderLineItems",
+                        new String[]{"orderLineItemID", "quantity", "productID", "orderID"},
+                        fields[i]
+                );
+                database.update(statement);
+            }
 
             if (flush()) {
-                database.commit();
+                //database.commit();
                 return true;
             } else {
-                database.abort();
+                //database.abort();
                 return false;
             }
-        } catch (SQLException ignored) {
-            database.abort();
-            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -123,15 +167,13 @@ public class CartController extends Controller {
         int newID = getLastedCartID();
         int currentQuantity = getCurrentQuantity(id);
         if (currentQuantity < quantity || currentQuantity == -1) return false;
-        // Get the current date and time
+
         LocalDateTime now = LocalDateTime.now();
-        // Define the Oracle SQL date format
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        // Format the current date and time
         String formattedDateTime = now.format(formatter);
 
         String insertStatement = "INSERT INTO ShoppingCart (cartID, quantity, dateAdded, userID, productID) " +
-                "VALUES (" + convert(String.valueOf(newID)) + ", " + Integer.toString(quantity) +
+                "VALUES (" + convert(Objects.toString(newID)) + ", " + quantity +
                 ", TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " +
                 convert(userId) + ", " + convert(id) + ")";
 
@@ -146,8 +188,9 @@ public class CartController extends Controller {
         try {
             database.update(insertStatement);
             database.update(updateStatement);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException ignored) {
+            database.abort();
+            return false;
         }
         return true;
     }
@@ -167,11 +210,35 @@ public class CartController extends Controller {
     }
 
     private int getLastedCartID() {
-        String statement = "SELECT NVL(MAX(productID), 0) AS maxCartID FROM ShoppingCart";
+        String statement = "SELECT NVL(MAX(cartID), 0) AS maxCartID FROM ShoppingCart";
         try {
             ResultSet results = database.query(statement);
             if (results.next()) {
                 return results.getInt("maxCartID") + 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 1;
+    }
+    private int getLastedOrderID() {
+        String statement = "SELECT NVL(MAX(orderID), 0) AS maxOrderID FROM Orders";
+        try {
+            ResultSet results = database.query(statement);
+            if (results.next()) {
+                return results.getInt("maxOrderID") + 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 1;
+    }
+    private int getLastedOrderLineItemsID() {
+        String statement = "SELECT NVL(MAX(orderLineItemID), 0) AS maxOrderLineItemID FROM OrderLineItems";
+        try {
+            ResultSet results = database.query(statement);
+            if (results.next()) {
+                return results.getInt("maxOrderLineItemID") + 1;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

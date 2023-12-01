@@ -258,7 +258,7 @@ public class ProductsController extends Controller {
         String categoryID = results.getString("categoryID");
         String categoryName = results.getString("categoryName");
         printStream.printf(
-                "%s. %s: %s\n\tPrice: %.1f\n\tQuantity: %d\n\tSupplier: %s\n\tWarehouse: %s\n\tReview: %.2f\n\tCategory: %s.%s\n\n",
+                "\n%s.%s: %s\n  Price: %.1f\n  Quantity: %d\n  Supplier: %s\n  Warehouse: %s\n  Review: %.2f\n  Category: %s.%s\n\n",
                 id, name, description, price, quantity, supplier, warehouse, review, categoryID, categoryName
         );
         i++;

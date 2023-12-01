@@ -51,14 +51,16 @@ public class Database {
 
     }
 
-    public ArrayList<String> insertAndGetKeys(String sqlStatement) throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(sqlStatement, Statement.RETURN_GENERATED_KEYS);
-        ResultSet result = statement.getGeneratedKeys();
-        ArrayList<String> keys = new ArrayList<>();
-        while (result.next()) keys.add(String.valueOf(result.getLong(1)));
-        return keys;
-    }
+//    public ArrayList<String> insertAndGetKeys(String sqlStatement) throws SQLException {
+//        Statement statement = connection.createStatement();
+//        statement.executeUpdate(sqlStatement, Statement.RETURN_GENERATED_KEYS);
+//        ResultSet result = statement.getGeneratedKeys();
+//        ArrayList<String> keys = new ArrayList<>();
+//        while (result.next()){
+//            keys.add(String.valueOf(result.getString(1)));
+//        }
+//        return keys;
+//    }
 
     public void commit() throws SQLException {
         connection.commit();

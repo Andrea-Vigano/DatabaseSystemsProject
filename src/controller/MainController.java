@@ -143,7 +143,7 @@ public class MainController extends Controller {
     }
 
     public void showCart() {
-        cartController.show();
+        cartController.show(this.getUserId());
     }
 
     public boolean checkout(String shippingAddressId) {
