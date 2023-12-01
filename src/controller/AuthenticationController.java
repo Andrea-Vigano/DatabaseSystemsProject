@@ -17,6 +17,12 @@ public class AuthenticationController extends Controller {
     private boolean isLogged = false;
     private boolean isAdmin = false;
 
+    public String getAdminID() {
+        return adminID;
+    }
+
+    private String adminID;
+
     public AuthenticationController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
     }
@@ -63,8 +69,8 @@ public class AuthenticationController extends Controller {
         String passwordHash = AuthenticationController.sha256(password);
         String where = "username=" + "'" + username + "'" + " AND passwordHash=" + "'" + passwordHash + "'";
         String statement = sqlManager.getSelectStatement(
-                new String[]{"Users"},
-                new String[]{"userID", "name", "username", "passwordHash", "email", "phoneNumber" },
+                new String[]{"Admin"},
+                new String[]{"adminID", "username", "passwordHash", "email", "phoneNumber" },
                 where
         );
         String checkStatement = sqlManager.getSelectStatement(
@@ -78,10 +84,11 @@ public class AuthenticationController extends Controller {
             ResultSet results = database.query(statement);
             ResultSet cntResults = database.query(checkStatement);
             if (results.next() && cntResults.next()) {
-                int count = results.getInt("count");
+                int count = cntResults.getInt("count");
                 if (count == 1) {
                     isLogged = true;
                     isAdmin = true;
+                    adminID = results.getString("adminID");
                     return true;
                 }
             }
@@ -117,6 +124,7 @@ public class AuthenticationController extends Controller {
     public boolean logOut() {
         isLogged = false;
         isAdmin = false;
+        adminID = null;
         return true;
     }
 
