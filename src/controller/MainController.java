@@ -107,7 +107,7 @@ public class MainController extends Controller {
             int quantity,
             String supplier,
             String warehouse,
-            String review,
+            double review,
             String categoryId
     ) {
         Product product = productsController.add(name, description, price, brand, quantity, supplier, warehouse, review, categoryId, this.authenticationController.getAdminID());

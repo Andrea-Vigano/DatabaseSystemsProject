@@ -8,7 +8,7 @@ public class Product {
     private String brand;
     private String supplier;
     private String warehouse;
-    private String review;
+    private double review;
     private String categoryID;
     private int quantity;
     private String adminID;
@@ -22,7 +22,7 @@ public class Product {
             int quantity,
             String supplier,
             String warehouse,
-            String review,
+            double review,
             String categoryId,
             String adminId
     ){
@@ -97,11 +97,11 @@ public class Product {
         this.warehouse = warehouse;
     }
 
-    public String getReview() {
+    public double getReview() {
         return review;
     }
 
-    public void setReview(String review) {
+    public void setReview(double review) {
         this.review = review;
     }
 

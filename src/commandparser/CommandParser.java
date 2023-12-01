@@ -235,7 +235,7 @@ public class CommandParser {
         printStream.print("Insert product warehouse name: ");
         String warehouse = scanner.nextLine();
         printStream.print("Insert product review: ");
-        String review = scanner.nextLine();
+        double review = Double.parseDouble(scanner.nextLine());
         printStream.print("Insert category name: ");
         String category = scanner.nextLine();
         String categoryID = this.controller.getCategoryId(category);

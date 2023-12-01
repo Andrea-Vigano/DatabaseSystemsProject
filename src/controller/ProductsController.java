@@ -32,7 +32,7 @@ public class ProductsController extends Controller {
         String[] tables = new String[]{ "Product", "Category", "Admin" };
         String[] fields = new String[]{
                 "Product.productID",
-                "Product.name",
+                "Product.name AS productName",
                 "Product.description",
                 "Product.price",
                 "Product.brand",
@@ -41,7 +41,7 @@ public class ProductsController extends Controller {
                 "Product.warehouse",
                 "Product.review",
                 "Category.categoryID",
-                "Category.name",
+                "Category.name AS categoryName",
                 "Admin.adminID"
         };
         String where = "Product.categoryID = Category.categoryID AND Product.adminID = Admin.adminID";
@@ -113,7 +113,7 @@ public class ProductsController extends Controller {
             int quantity,
             String supplier,
             String warehouse,
-            String review,
+            double review,
             String categoryId,
             String adminId
     ) {
@@ -122,7 +122,7 @@ public class ProductsController extends Controller {
                 "Product",
                 new String[] { "productID", "name", "description", "price", "brand", "quantity", "supplier", "warehouse", "review", "categoryID", "adminID" },
                 new String[] {convert(Integer.toString(id)), convert(name), convert(description), Objects.toString(price),
-                        convert(brand), Objects.toString(quantity), convert(supplier), convert(warehouse), convert(review),
+                        convert(brand), Objects.toString(quantity), convert(supplier), convert(warehouse), Objects.toString(review),
                         convert(categoryId), convert(adminId) }
         );
         printStream.println(statement);
@@ -248,19 +248,18 @@ public class ProductsController extends Controller {
     }
 
     private int printProduct(String id, ResultSet results, int i) throws SQLException {
-        String name = results.getString("name");
+        String name = results.getString("productName");
         String description = results.getString("description");
         double price = results.getDouble("price");
         int quantity = results.getInt("quantity");
         String supplier = results.getString("supplier");
         String warehouse = results.getString("warehouse");
-        String review = results.getString("review");
+        double review = results.getDouble("review");
         String categoryID = results.getString("categoryID");
-        String categoryName = getCategory(categoryID);
-        String adminID = results.getString("adminID");
+        String categoryName = results.getString("categoryName");
         printStream.printf(
-                "%s. %s: %s\n\tPrice: %.1f\n\tQuantity: %d\n\tSupplier: %s\n\tWarehouse: %s\n\tReview: %s\n\tCategory: %s. %s\n\tAdminID: %s\n\n",
-                id, name, description, price, quantity, supplier, warehouse, review, categoryID, categoryName, adminID
+                "%s. %s: %s\n\tPrice: %.1f\n\tQuantity: %d\n\tSupplier: %s\n\tWarehouse: %s\n\tReview: %.2f\n\tCategory: %s.%s\n\n",
+                id, name, description, price, quantity, supplier, warehouse, review, categoryID, categoryName
         );
         i++;
         return i;
