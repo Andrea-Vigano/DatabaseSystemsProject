@@ -94,7 +94,7 @@ public class MainController extends Controller {
         productsController.show(id);
     }
 
-    public boolean getCategoryId(String name) {
+    public String getCategoryId(String name) {
         return productsController.getCategory(name);
     }
 
