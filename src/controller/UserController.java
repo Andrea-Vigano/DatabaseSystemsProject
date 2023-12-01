@@ -18,7 +18,7 @@ public class UserController extends Controller {
     public boolean addShippingAddress(String address) {
         String statement = sqlManager.getInsertStatement(
             "Address",
-            new String[] { "address", "user_id" },
+            new String[] { "address", "userID" },
             new String[] { address, this.user.getUserID() }
         );
         try {
