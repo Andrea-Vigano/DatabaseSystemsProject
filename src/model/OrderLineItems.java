@@ -6,6 +6,13 @@ public class OrderLineItems {
     private String productID;
     private String orderID;
 
+    public OrderLineItems(String orderLineItemID, int quantity, String productID, String orderID) {
+        this.orderLineItemID = orderLineItemID;
+        this.quantity = quantity;
+        this.productID = productID;
+        this.orderID = orderID;
+    }
+
     // Getters and setters
 
     public String getOrderLineItemID() {

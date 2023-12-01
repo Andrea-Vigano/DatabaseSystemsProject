@@ -1,11 +1,12 @@
 package model;
 
 public class User {
-    private String userID;
+    private int userID;
     private String name;
     private String username;
     private String passwordHash;
     private String email;
+    private String address;
     private String phoneNumber;
 
     public User(int userID, String name, String username, String passwordHash, String email, String phoneNumber) {
@@ -19,11 +20,11 @@ public class User {
 
     // Getters and setters
 
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 

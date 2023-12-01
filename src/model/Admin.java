@@ -7,6 +7,14 @@ public class Admin {
     private String email;
     private String phoneNumber;
 
+    public Admin(String adminID, String username, String passwordHash, String email, String phoneNumber) {
+        this.adminID = adminID;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
     // Getters and setters
 
     public String getAdminID() {
