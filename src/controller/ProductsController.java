@@ -21,6 +21,9 @@ public class ProductsController extends Controller {
         super(printStream, database, sqlManager);
     }
 
+    public Product getProduct() {
+        return product;
+    }
     public void setProduct(Product product){
         this.product = product;
     }
@@ -45,10 +48,11 @@ public class ProductsController extends Controller {
         String statement = sqlManager.getSelectStatement(tables, fields, where);
         printStream.println(statement);
         try {
-            ResultSet results = database.query("SELECT Product.productID FROM Product");
+            ResultSet results = database.query(statement);
+            printStream.println(results);
             int i = 0;
             while (results.next()) {
-                String id = results.getString("Product.productID");
+                String id = results.getString("productID");
                 i = printProduct(id, results, i);
             }
             if (i == 0) {
@@ -56,7 +60,7 @@ public class ProductsController extends Controller {
             }
             results.close();
         } catch (SQLException e) {
-            return false;
+            throw new RuntimeException(e);
         }
         return true;
     }
@@ -235,6 +239,7 @@ public class ProductsController extends Controller {
             int i = 0;
             while (results.next()) {
                 i = printProduct(id, results, i);
+                printStream.println(i);
             }
             if (i == 0) {
                 printStream.println("No products to show");
@@ -243,18 +248,18 @@ public class ProductsController extends Controller {
     }
 
     private int printProduct(String id, ResultSet results, int i) throws SQLException {
-        String name = results.getString("Product.name");
-        String description = results.getString("Product.description");
-        double price = results.getDouble("Product.price");
-        int quantity = results.getInt("Product.quantity");
-        String supplier = results.getString("Product.supplier");
-        String warehouse = results.getString("Product.warehouse");
-        String review = results.getString("Product.review");
-        String categoryID = results.getString("Category.categoryID");
-        String categoryName = results.getString("Category.name");
-        String adminID = results.getString("Admin.adminID");
+        String name = results.getString("name");
+        String description = results.getString("description");
+        double price = results.getDouble("price");
+        int quantity = results.getInt("quantity");
+        String supplier = results.getString("supplier");
+        String warehouse = results.getString("warehouse");
+        String review = results.getString("review");
+        String categoryID = results.getString("categoryID");
+        String categoryName = getCategory(categoryID);
+        String adminID = results.getString("adminID");
         printStream.printf(
-                "%s. %s: %s\n\tPrice: .2%f\tQuantity: %d\n\tSupplier: %s\tWarehouse: %s\n\tReview: %s\n\tCategory: %s. %s\n\tAdminID: %s\n\n",
+                "%s. %s: %s\n\tPrice: %.1f\n\tQuantity: %d\n\tSupplier: %s\n\tWarehouse: %s\n\tReview: %s\n\tCategory: %s. %s\n\tAdminID: %s\n\n",
                 id, name, description, price, quantity, supplier, warehouse, review, categoryID, categoryName, adminID
         );
         i++;

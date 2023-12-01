@@ -41,14 +41,10 @@ public class Database {
 
     public ResultSet query(String sqlStatement) throws SQLException {
         Statement statement = connection.createStatement();
+        System.out.println(statement);
         return statement.executeQuery(sqlStatement);
     }
 
-    public void insert(String sqlStatement) throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.execute (sqlStatement);
-        statement.execute("COMMIT");
-    }
     public void update(String sqlStatement) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate(sqlStatement);
