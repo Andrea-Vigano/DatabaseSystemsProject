@@ -35,7 +35,7 @@ public class CartController extends Controller {
     private ArrayList<ShoppingCart> list(String userId) throws SQLException {
         String statement = sqlManager.getSelectStatement(
                 new String[] { "ShoppingCart", "Product", "Users" },
-                new String[] { "ShoppingCart.cartID", "ShoppingCart.quantity", "ShoppingCart.dateAdded", "Product.name", "ShoppingCart.productID", "ShoppingCart.userID" },
+                new String[] { "ShoppingCart.cartID", "ShoppingCart.quantity", "ShoppingCart.dateAdded", "Product.name", "Product.price", "ShoppingCart.productID", "ShoppingCart.userID" },
                 "ShoppingCart.productID = Product.productID AND ShoppingCart.userID = Users.userID AND ShoppingCart.userID = " + userId
         );
         printStream.println(statement);
@@ -46,8 +46,9 @@ public class CartController extends Controller {
             int quantity = result.getInt("quantity");
             Date dateAdded = result.getDate("dateAdded");
             String productName = result.getString("name");
+            double productPrice = result.getDouble("price");
             String productID = result.getString("productID");
-            list.add(new ShoppingCart(id, quantity, dateAdded, productName, productID));
+            list.add(new ShoppingCart(id, quantity, dateAdded, productName, productPrice, productID));
         }
         return list;
     }
@@ -80,10 +81,11 @@ public class CartController extends Controller {
             ArrayList<ShoppingCart> list = this.list(userId);
             for (ShoppingCart item : list) {
                 printStream.printf(
-                        "\n%s.%s\n  Quantity: %d\n  Added on: %s%n\n",
+                        "\n%s.%s\n  Quantity: %d\n  Calculated Price: %.1f\n  Added on: %s%n\n",
                         item.getId(),
                         item.getProductName(),
                         item.getQuantity(),
+                        (item.getProductPrice() * item.getQuantity()),
                         item.getDateAdded()
                 );
             }
@@ -123,19 +125,20 @@ public class CartController extends Controller {
             String orderId = String.valueOf(newID);
             ArrayList<ShoppingCart> list = this.list(userId);
 
-            String[][] fields = new String[list.size()][4];
+            String[][] fields = new String[list.size()][5];
 
             for (int i = 0; i < list(userId).size(); i++) {
                 fields[i][0] = convert(String.valueOf(i + 1));
-                fields[i][1] = String.valueOf(list.get(i).getQuantity());
-                fields[i][2] = convert(list.get(i).getProductID());
-                fields[i][3] = convert(orderId);
+                fields[i][1] = String.valueOf(list.get(i).getProductPrice() * list.get(i).getQuantity());
+                fields[i][2] = String.valueOf(list.get(i).getQuantity());
+                fields[i][3] = convert(list.get(i).getProductID());
+                fields[i][4] = convert(orderId);
             }
             printStream.println(Arrays.deepToString(fields));
             for(int i = 0; i < fields.length; i++){
                 String statement = sqlManager.getInsertStatement(
                         "OrderLineItems",
-                        new String[]{"orderLineItemID", "quantity", "productID", "orderID"},
+                        new String[]{"orderLineItemID", "price" ,"quantity", "productID", "orderID"},
                         fields[i]
                 );
                 database.update(statement);
@@ -166,14 +169,15 @@ public class CartController extends Controller {
     public boolean add(String id, int quantity, String userId) {
         int newID = getLastedCartID();
         int currentQuantity = getCurrentQuantity(id);
-        if (currentQuantity < quantity || currentQuantity == -1) return false;
+        double currentPrice = getCurrentPrice(id);
+        if (currentQuantity < quantity || currentQuantity == -1 || currentPrice == -1) return false;
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
 
-        String insertStatement = "INSERT INTO ShoppingCart (cartID, quantity, dateAdded, userID, productID) " +
-                "VALUES (" + convert(Objects.toString(newID)) + ", " + quantity +
+        String insertStatement = "INSERT INTO ShoppingCart (cartID, quantity, price, dateAdded, userID, productID) " +
+                "VALUES (" + convert(Objects.toString(newID)) + ", " + quantity + ", " + (currentPrice * quantity) +
                 ", TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " +
                 convert(userId) + ", " + convert(id) + ")";
 
@@ -188,9 +192,8 @@ public class CartController extends Controller {
         try {
             database.update(insertStatement);
             database.update(updateStatement);
-        } catch (SQLException ignored) {
-            database.abort();
-            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return true;
     }
@@ -204,6 +207,20 @@ public class CartController extends Controller {
             ResultSet result = database.query(statementForQuantityCheck);
             if (result.next()) {
                 return result.getInt("quantity");
+            }
+        } catch (SQLException ignored) { }
+        return -1;
+    }
+
+    private double getCurrentPrice(String id) {
+        String statementForQuantityCheck = sqlManager.getSelectStatement(
+                "Product",
+                new String[] { "price" }, "productID = " + id
+        );
+        try {
+            ResultSet result = database.query(statementForQuantityCheck);
+            if (result.next()) {
+                return result.getDouble("price");
             }
         } catch (SQLException ignored) { }
         return -1;

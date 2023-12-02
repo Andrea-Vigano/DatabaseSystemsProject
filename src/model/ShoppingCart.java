@@ -7,14 +7,16 @@ public class ShoppingCart {
     private int quantity;
     private Date dateAdded;
     private String productName;
+    private double productPrice;
     private String productID;
 
 
-    public ShoppingCart(String id, int quantity, Date dateAdded, String productName, String productID) {
+    public ShoppingCart(String id, int quantity, Date dateAdded, String productName, double productPrice, String productID) {
         this.id = id;
         this.quantity = quantity;
         this.dateAdded = dateAdded;
         this.productName = productName;
+        this.productPrice = productPrice;
         this.productID = productID;
     }
 
@@ -49,6 +51,10 @@ public class ShoppingCart {
     public void setProductName(String productName) {
         this.productName = productName;
     }
+
+    public double getProductPrice() { return productPrice; }
+
+    public void setProductPrice(double productPrice) { this.productPrice = productPrice; }
 
     public String getProductID() {
         return productID;
