@@ -91,6 +91,10 @@ public class MainController extends Controller {
         return productsController.list_category();
     }
 
+    public boolean listReports(){
+        return reportingController.list();
+    }
+
     public boolean searchProducts(String category, String brand, double lowestPrice, double highestPrice) {
         return productsController.search(category, brand, lowestPrice, highestPrice);
     }

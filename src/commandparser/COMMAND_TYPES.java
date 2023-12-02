@@ -18,6 +18,7 @@ public enum COMMAND_TYPES {
     HELP("help"),
     LIST_PRODUCTS("list-products"),
     LIST_CATEGORY("list-category"),
+    LIST_REPORTS("list-report"),
     LOGIN("login"),
     LOGOUT("logout"),
     SEARCH_PRODUCTS("search-product"),

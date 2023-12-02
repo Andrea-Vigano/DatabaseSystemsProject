@@ -38,7 +38,9 @@ public class CommandParser {
             this.wrapWithAuth(this::performList);
         } else if (command.isListCategory()) {
             this.wrapWithAuth(this::performList_Category);
-        } else if (command.isSearchProducts()) {
+        } else if(command.isListReports()){
+            this.wrapWithAuth(this::performListReports);
+        }else if (command.isSearchProducts()) {
             this.wrapWithAuth(this::performSearch);
         } else if (command.isAdminLogin()) {
             this.wrapWithLoginCheck(this::performAdminLogin);
@@ -191,6 +193,12 @@ public class CommandParser {
         boolean result = this.controller.listCategory();
         if (result) printStream.println("Successfully listed Categories");
         else printStream.println("Unable to list categories");
+    }
+
+    private void performListReports(){
+        boolean result = this.controller.listReports();
+        if (result) printStream.println("Successfully listed reports");
+        else printStream.println("Unable to list reports");
     }
 
     private void performSearch() {

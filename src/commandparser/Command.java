@@ -46,10 +46,10 @@ public class Command {
     public Boolean isListProducts() {
         return this.is(COMMAND_TYPES.LIST_PRODUCTS);
     }
-    public Boolean isListCategory() {
-        return this.is(COMMAND_TYPES.LIST_CATEGORY);
-    }
 
+    public Boolean isListCategory() { return this.is(COMMAND_TYPES.LIST_CATEGORY); }
+
+    public Boolean isListReports() { return this.is(COMMAND_TYPES.LIST_REPORTS); }
 
     public Boolean isSearchProducts() {
         return this.is(COMMAND_TYPES.SEARCH_PRODUCTS);

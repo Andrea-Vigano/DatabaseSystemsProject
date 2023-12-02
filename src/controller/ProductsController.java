@@ -39,7 +39,7 @@ public class ProductsController extends Controller {
                 "Product.productID",
                 "Product.name AS productName",
                 "Product.description",
-                "Product.price",
+                "Product.price- Promotion.Discount* Product.price",
                 "Product.brand",
                 "Product.quantity",
                 "Product.supplier",
@@ -90,7 +90,8 @@ public class ProductsController extends Controller {
             }
             results.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            database.abort();
+            return false;
         }
         return true;
     }

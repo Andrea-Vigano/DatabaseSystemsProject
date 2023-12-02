@@ -113,7 +113,7 @@ public class ReportingController extends Controller {
         return null;
     }
 
-    private void list() {
+    public boolean list() {
         String statement = sqlManager.getSelectStatement(
                 new String[] { "Report", "Admin"},
                 new String[] { "Report.reportID", "Report.name", "Report.revenue", "Report.sales", "Admin.adminID" },
@@ -132,8 +132,10 @@ public class ReportingController extends Controller {
             }
             results.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            database.abort();
+            return false;
         }
+        return true;
     }
     private int printProduct(String id, ResultSet results, int i) throws SQLException {
         String name = results.getString("name");
