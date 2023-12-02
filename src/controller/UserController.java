@@ -76,7 +76,7 @@ public class UserController extends Controller {
         String statement = sqlManager.getUpdateStatement(
                 "Users",
                 new String[] { "passwordHash" },
-                new String[] { passwordHash },
+                new String[] { "'" + passwordHash + "'" },
                 "userID = " + this.user.getUserId()
         );
         printStream.println(statement);
