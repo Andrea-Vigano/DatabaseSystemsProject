@@ -378,36 +378,11 @@ public class CommandParser {
     }
 
     private void performGenerateReport() {
-        printStream.println("Insert the start date (YYYY-MM-DD): ");
-        Date startDate = Date.valueOf(scanner.nextLine());
-        printStream.println("Insert the end date (YYYY-MM-DD): ");
-        Date endDate = Date.valueOf(scanner.nextLine());
-
-
-        printStream.println("Select the type of report:\n" +
-                "1. Revenue Report \n" +
-                "2. Sales Report \n" +
-                "3. Order Report ");
-        printStream.print("Enter your choice: ");
-        int choice = Integer.parseInt(scanner.nextLine());
-        String adminID="1";
-        switch (choice) {
-            case 1:
-                controller.generateRevenueReport();
-                break;
-            case 2:
-                controller.generateSalesReport();
-                break;
-            case 3:
-                controller.generateOrderReport(startDate, endDate);
-                break;
-            default:
-                printStream.println("Invalid choice. Please select a valid option.");
-                break;
-        }
-
-
+        boolean result = this.controller.generateReport();
+        if (result) printStream.println("Report is successfully generated");
+        else printStream.println("Unable to generate report");
     }
+
 
     private void performHelp() {
         if (this.controller.isAdmin()) {

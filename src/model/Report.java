@@ -2,14 +2,16 @@ package model;
 
 public class Report {
     private String reportID;
-    private String description;
+    private String productName;
     private double revenue;
+    private int sales;
     private String adminID;
 
-    public Report(String reportID, String description, double revenue, String adminID) {
+    public Report(String reportID, String productName, double revenue, int sales, String adminID) {
         this.reportID = reportID;
-        this.description = description;
+        this.productName = productName;
         this.revenue = revenue;
+        this.sales = sales;
         this.adminID = adminID;
     }
 
@@ -22,17 +24,21 @@ public class Report {
         this.reportID = reportID;
     }
 
-    public String getDescription() {
-        return description;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public double getRevenue() {
         return revenue;
     }
+
+    public int getSales() { return sales; }
+
+    public void setSales(int sales) { this.sales = sales; }
 
     public void setRevenue(double revenue) {
         this.revenue = revenue;

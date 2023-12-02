@@ -184,15 +184,8 @@ public class MainController extends Controller {
             database.closeConnection();
         } catch (SQLException ignored) { }
     }
-    public boolean generateRevenueReport() {
-        return reportingController.generateRevenueReport(authenticationController.getAdminID());
-    }
 
-    public boolean generateSalesReport() {
-        return reportingController.generateSalesReport(authenticationController.getAdminID());
-    }
-
-    public boolean generateOrderReport(Date startDate, Date endDate) {
-        return reportingController.generateOrderReport(startDate, endDate);
+    public boolean generateReport(){
+        return reportingController.generateReport(this.authenticationController.getAdminID());
     }
 }
