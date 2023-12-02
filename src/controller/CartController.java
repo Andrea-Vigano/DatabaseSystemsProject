@@ -104,10 +104,10 @@ public class CartController extends Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
 
-        String insertStatement = "INSERT INTO Orders (orderID, dateCreated, warehouse, userID, addressID) " +
+        String insertStatement = "INSERT INTO Orders (orderID, dateCreated, totalprice, warehouse, userID, addressID) " +
                 "VALUES (" + convert(Objects.toString(newID)) + ", " +
-                "TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " + convert(warehouse) + ", " +
-                convert(userId) + ", " + convert(shippingAddressId) + ")";
+                "TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " + 0.0 + ", " + convert(warehouse) +
+                ", " + convert(userId) + ", " + convert(shippingAddressId) + ")";
         printStream.println(insertStatement);
         try {
             database.update(insertStatement);
@@ -120,6 +120,7 @@ public class CartController extends Controller {
 
             String[][] fields = new String[list.size()][5];
             int orderLineItemsID = getLastedOrderLineItemsID();
+            double totalprice = 0.0;
 
             for (int i = 0; i < list(userId).size(); i++) {
                 fields[i][0] = convert(String.valueOf(orderLineItemsID));
@@ -127,6 +128,8 @@ public class CartController extends Controller {
                 fields[i][2] = String.valueOf(list.get(i).getQuantity());
                 fields[i][3] = convert(list.get(i).getProductID());
                 fields[i][4] = convert(orderId);
+
+                totalprice += (list.get(i).getProductPrice() * list.get(i).getQuantity());
                 orderLineItemsID++;
             }
             printStream.println(Arrays.deepToString(fields));
@@ -139,6 +142,9 @@ public class CartController extends Controller {
                 database.update(statement);
             }
 
+            insertStatement = "UPDATE ORDERS SET totalprice=" + totalprice + "WHERE orderID=" + orderId;
+            printStream.println(insertStatement);
+            database.update(insertStatement);
             if (flush()) {
                 //database.commit();
                 return true;
