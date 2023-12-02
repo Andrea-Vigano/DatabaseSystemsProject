@@ -17,8 +17,10 @@ public class ReportingController extends Controller {
     }
     public boolean generateReport(String adminID){
         ArrayList<Integer> arrayList = getProductLength();
+        ArrayList<Integer> arrayList1 = getRecordLength();
         try {
             for (int i = arrayList.get(1); i <= arrayList.get(0); i++) {
+                if(arrayList1.get(0) != null && i <= arrayList1.get(0)) continue;
                 String currentProductName = getProductName(String.valueOf(i));
                 String statement = sqlManager.getInsertStatement(
                         "Report",
@@ -93,6 +95,28 @@ public class ReportingController extends Controller {
                 ArrayList<Integer> result = new ArrayList<>();
                 result.add(resultMax.getInt("maxProduct"));
                 result.add(resultMin.getInt("minProduct"));
+                return result;
+            }
+        } catch (SQLException ignored) { }
+        return null;
+    }
+
+    private ArrayList<Integer> getRecordLength() {
+        String statementMax = sqlManager.getSelectStatement(
+                "Report",
+                new String[] { "MAX(reportID) AS maxReport" }
+        );
+        String statementMin = sqlManager.getSelectStatement(
+                "Report",
+                new String[] { "MIN(reportID) AS minReport" }
+        );
+        try {
+            ResultSet resultMax = database.query(statementMax);
+            ResultSet resultMin = database.query(statementMin);
+            if (resultMax.next() && resultMin.next()) {
+                ArrayList<Integer> result = new ArrayList<>();
+                result.add(resultMax.getInt("maxReport"));
+                result.add(resultMin.getInt("minReport"));
                 return result;
             }
         } catch (SQLException ignored) { }
