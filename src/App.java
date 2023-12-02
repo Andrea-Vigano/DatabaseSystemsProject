@@ -22,10 +22,18 @@ public class App {
         App app = new App(MainController);
         app.run();
     }
+    static private void printCommands(){
+        System.out.println("Welcome to our OSS System. Please login before proceeding.");
+        System.out.println("=========================");
+        System.out.println("Enter a command. (type 'help' for list of commands)");
+
+    }
 
     public void run() {
         Command currentCommand;
+        printCommands();
         do {
+            System.out.print(">> ");
             String rawCommand = App.scanner.nextLine();
             currentCommand = new Command(rawCommand);
             commandParser.parse(currentCommand);

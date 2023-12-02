@@ -378,11 +378,39 @@ public class CommandParser {
 
     private void performHelp() {
         if (this.controller.isAdmin()) {
-            printStream.println("ADMIN HELP MESSAGE\n\n...");
+            System.out.println("1. login");
+            System.out.println("2. signup");
+            System.out.println("3. logout");
+            System.out.println("4. change-password");
+            System.out.println("5. show-shipping-addresses");
+            System.out.println("6. add-shipping-addresses");
+            System.out.println("7. delete-shipping-addresses");
+            System.out.println("8. list-products");
+            System.out.println("9. search-product");
+            System.out.println("10. admin-login");
+            System.out.println("11. add-product");
+            System.out.println("12. update-product");
+            System.out.println("13. delete-product");
+            System.out.println("14. show-product");
+            System.out.println("15. add-to-cart");
+            System.out.println("16. show-cart");
+            System.out.println("17. checkout");
+            System.out.println("18. generate-report");
         } else if (this.controller.isLogged()) {
-            printStream.println("USER HELP MESSAGE\n\n...");
+            System.out.println("1. logout");
+            System.out.println("2. change-password");
+            System.out.println("3. show-shipping-addresses");
+            System.out.println("4. add-shipping-addresses");
+            System.out.println("5. delete-shipping-addresses");
+            System.out.println("6. list-products");
+            System.out.println("7. search-product");
+            System.out.println("8. show-product");
+            System.out.println("9. add-to-cart");
+            System.out.println("10. show-cart");
+            System.out.println("11. checkout");
         } else {
-            printStream.println("GUEST USER HELP MESSAGE\n\n...");
+            System.out.println("1. login");
+            System.out.println("2. signup");
         }
     }
 }
