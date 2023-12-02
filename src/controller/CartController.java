@@ -147,7 +147,8 @@ public class CartController extends Controller {
                 return false;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            database.abort();
+            return false;
         }
     }
 
@@ -188,7 +189,8 @@ public class CartController extends Controller {
             database.update(insertStatement);
             database.update(updateStatement);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            database.abort();
+            return false;
         }
         return true;
     }
