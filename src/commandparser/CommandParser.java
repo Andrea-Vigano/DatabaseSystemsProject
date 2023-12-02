@@ -378,6 +378,14 @@ public class CommandParser {
 
     private void performHelp() {
         if (this.controller.isAdmin()) {
+            System.out.println(" Hello I am your personal assistant, here's a small guide for you  ");
+            System.out.println("   ___");
+            System.out.println("  (o o)");
+            System.out.println(" /  V  \\");
+            System.out.println("/(  _  )\\");
+            System.out.println("_^^__^^__ ");
+            System.out.println(" ");
+
             System.out.println("1. login");
             System.out.println("2. signup");
             System.out.println("3. logout");
@@ -397,6 +405,14 @@ public class CommandParser {
             System.out.println("17. checkout");
             System.out.println("18. generate-report");
         } else if (this.controller.isLogged()) {
+            System.out.println(" Hello I am your personal assistant, here's a small guide for you  ");
+            System.out.println("   ___");
+            System.out.println("  (o o)");
+            System.out.println(" /  V  \\");
+            System.out.println("/(  _  )\\");
+            System.out.println("_^^__^^__ ");
+            System.out.println(" ");
+
             System.out.println("1. logout");
             System.out.println("2. change-password");
             System.out.println("3. show-shipping-addresses");
@@ -409,6 +425,14 @@ public class CommandParser {
             System.out.println("10. show-cart");
             System.out.println("11. checkout");
         } else {
+            System.out.println(" Hello I am your personal assistant, here's a small guide for you  ");
+            System.out.println("   ___");
+            System.out.println("  (o o)");
+            System.out.println(" /  V  \\");
+            System.out.println("/(  _  )\\");
+            System.out.println("_^^__^^__ ");
+            System.out.println(" ");
+
             System.out.println("1. login");
             System.out.println("2. signup");
         }

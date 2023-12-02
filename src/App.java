@@ -23,15 +23,27 @@ public class App {
         app.run();
     }
     static private void printCommands(){
-        System.out.println("Welcome to our OSS System. Please login before proceeding.");
-        System.out.println("=========================");
-        System.out.println("Enter a command. (type 'help' for list of commands)");
+            System.out.println("=========================================");
+            System.out.println("          Welcome to our OSS System          ");
+            System.out.println("======================================");
+            System.out.println("        Please login before proceeding       ");
+            System.out.println("======================================");
 
-    }
+            System.out.println("_        ,");
+            System.out.println("(_\\______/__________/");
+            System.out.println("   \\-|-|/|-|-|-|-|//");
+            System.out.println("    \\==/-|-|-|-|-//");
+            System.out.println("     \\/|-|-|-|,-//");
+            System.out.println("      \\_-|_|_|_//");
+            System.out.println("       \\_j________");
+            System.out.println("       (_)     (_)");
+            System.out.println("Enter a command. (Type 'help' for a list of commands for system navigation )");
+        }
 
-    public void run() {
-        Command currentCommand;
+
+        public void run() {
         printCommands();
+        Command currentCommand;
         do {
             System.out.print(">> ");
             String rawCommand = App.scanner.nextLine();
