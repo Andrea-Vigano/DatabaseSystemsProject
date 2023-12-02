@@ -39,7 +39,7 @@ public class ProductsController extends Controller {
                 "Product.productID",
                 "Product.name AS productName",
                 "Product.description",
-                "Product.price- Promotion.Discount* Product.price",
+                "Product.price",
                 "Product.brand",
                 "Product.quantity",
                 "Product.supplier",

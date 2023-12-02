@@ -71,10 +71,10 @@ public class Command {
     public Boolean isDeleteProduct() {
         return this.is(COMMAND_TYPES.DELETE_PRODUCT);
     }
-    public Boolean isDeleteCategory() {
-        return this.is(COMMAND_TYPES.DELETE_CATEGORY);
-    }
 
+    public Boolean isDeleteCategory() { return this.is(COMMAND_TYPES.DELETE_CATEGORY); }
+
+    public Boolean isDeletePromotion() { return this.is(COMMAND_TYPES.DELETE_PROMOTION); }
 
     public Boolean isShowProduct() {
         return this.is(COMMAND_TYPES.SHOW_PRODUCT);
@@ -84,9 +84,8 @@ public class Command {
     }
 
 
-    public Boolean isAddToCart() {
-        return this.is(COMMAND_TYPES.ADD_TO_CART);
-    }
+    public Boolean isAddToCart() { return this.is(COMMAND_TYPES.ADD_TO_CART); }
+    public Boolean isAddPromotion() { return this.is(COMMAND_TYPES.ADD_PROMOTION); }
 
     public Boolean isShowCart() {
         return this.is(COMMAND_TYPES.SHOW_CART);

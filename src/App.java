@@ -25,9 +25,9 @@ public class App {
     static private void printCommands(){
             System.out.println("=========================================");
             System.out.println("          Welcome to our OSS System          ");
-            System.out.println("======================================");
+            System.out.println("=========================================");
             System.out.println("        Please login before proceeding       ");
-            System.out.println("======================================");
+            System.out.println("=========================================");
 
             System.out.println("_        ,");
             System.out.println("(_\\______/__________/");
