@@ -53,27 +53,29 @@ public class CartController extends Controller {
         return list;
     }
 
-    private String compareWarehouse(String userId) throws SQLException {
+    private String compareWarehouse(String userId) {
         String statement = sqlManager.getSelectStatement(
                 new String[] { "ShoppingCart", "Product", "Users" },
                 new String[] { "ShoppingCart.cartID", "ShoppingCart.quantity", "ShoppingCart.productID", "ShoppingCart.userID", "Product.warehouse" },
                 "ShoppingCart.productID = Product.productID AND ShoppingCart.userID = Users.userID AND ShoppingCart.userID = " + userId
         );
         printStream.println(statement);
-
-        int max = 0;
-        String res = "";
-        ResultSet result = database.query(statement);
-        while (result.next()) {
-            int quantity = result.getInt("quantity");
-            if(max <= quantity){
-                String warehouse = result.getString("warehouse");
-                max = quantity;
-                res = warehouse;
+        try {
+            int max = 0;
+            String res = "";
+            ResultSet result = database.query(statement);
+            while (result.next()) {
+                int quantity = result.getInt("quantity");
+                if(max <= quantity){
+                    String warehouse = result.getString("warehouse");
+                    max = quantity;
+                    res = warehouse;
+                }
             }
+            return res;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        return res;
     }
 
     public void show(String userId) {
@@ -96,12 +98,8 @@ public class CartController extends Controller {
 
     public boolean checkout(String shippingAddressId, String userId) {
         int newID = getLastedOrderID();
-        String warehouse;
-        try {
-            warehouse = this.compareWarehouse(userId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        String warehouse = this.compareWarehouse(userId);
+        printStream.println(warehouse);
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
@@ -110,29 +108,26 @@ public class CartController extends Controller {
                 "VALUES (" + convert(Objects.toString(newID)) + ", " +
                 "TO_DATE(" + convert(formattedDateTime) + ", 'YYYY-MM-DD HH24:MI:SS'), " + convert(warehouse) + ", " +
                 convert(userId) + ", " + convert(shippingAddressId) + ")";
-//        String statement = sqlManager.getInsertStatement(
-//                "Orders",
-//                new String[]{"dateCreated", "userID", "addressID"},
-//                new String[]{convert(String.valueOf(new Date(System.currentTimeMillis()))), convert(userId), convert(shippingAddressId)}
-//        );
         printStream.println(insertStatement);
         try {
+            database.update(insertStatement);
             if (newID == 0) {
                 database.abort();
                 return false;
             }
-            int orderLineItemsID = getLastedOrderLineItemsID();
             String orderId = String.valueOf(newID);
             ArrayList<ShoppingCart> list = this.list(userId);
 
             String[][] fields = new String[list.size()][5];
+            int orderLineItemsID = getLastedOrderLineItemsID();
 
             for (int i = 0; i < list(userId).size(); i++) {
-                fields[i][0] = convert(String.valueOf(i + 1));
+                fields[i][0] = convert(String.valueOf(orderLineItemsID));
                 fields[i][1] = String.valueOf(list.get(i).getProductPrice() * list.get(i).getQuantity());
                 fields[i][2] = String.valueOf(list.get(i).getQuantity());
                 fields[i][3] = convert(list.get(i).getProductID());
                 fields[i][4] = convert(orderId);
+                orderLineItemsID++;
             }
             printStream.println(Arrays.deepToString(fields));
             for(int i = 0; i < fields.length; i++){
