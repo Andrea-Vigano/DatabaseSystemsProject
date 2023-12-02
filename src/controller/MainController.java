@@ -162,6 +162,9 @@ public class MainController extends Controller {
         return productsController.delete_category(id);
     }
 
+    public boolean deletePromotion(String id){
+        return reportingController.delete_promotion(id);
+    }
 
     public boolean isCartEmpty() {
         return cartController.isEmpty();
@@ -177,6 +180,10 @@ public class MainController extends Controller {
 
     public boolean addToCart(String id, int quantity) {
         return cartController.add(id, quantity, this.getUserId());
+    }
+
+    public boolean addPromotion(String id, int percentage, Date startDate, Date endDate) {
+        return reportingController.addPromotion(id, percentage, startDate, endDate);
     }
 
     public String getUserId() {

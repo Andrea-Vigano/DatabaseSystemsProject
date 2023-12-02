@@ -58,9 +58,13 @@ public class CommandParser {
             this.wrapWithAuth(this::performShowCategory);
         } else if (command.isDeleteCategory()) {
             this.wrapWithAdminAuth(this::performDeleteCategory);
-        } else if (command.isAddToCart()) {
+        } else if (command.isDeletePromotion()){
+            this.wrapWithAuth(this::performDeletePromotion);
+        }else if (command.isAddToCart()) {
             this.wrapWithAuth(this::performAddToCart);
-        } else if (command.isShowCart()) {
+        } else if(command.isAddPromotion()){
+            this.wrapWithAuth(this::performAddPromotion);
+        }else if (command.isShowCart()) {
             this.wrapWithAuth(this::performShowCart);
         } else if (command.isCheckout()) {
             this.wrapWithAuth(this::performCheckout);
@@ -349,6 +353,14 @@ public class CommandParser {
         else printStream.println("Unable to delete category with id: " + id);
     }
 
+    private void performDeletePromotion(){
+        printStream.println("Insert product id: ");
+        String id = scanner.nextLine();
+        boolean result = this.controller.deletePromotion(id);
+        if (result) printStream.println("Successfully deleted promotion with product id: " + id);
+        else printStream.println("Unable to delete category with product id: " + id);
+    }
+
     private void performShowProduct() {
         printStream.print("Insert product id: ");
         String id = scanner.nextLine();
@@ -368,6 +380,25 @@ public class CommandParser {
         boolean result = this.controller.addToCart(id, quantity);
         if (result) printStream.println("Successfully added to cart product with id: " + id);
         else printStream.println("Unable to add to cart product with id: " + id);
+    }
+
+    private void performAddPromotion(){
+        printStream.print("Insert product id: ");
+        String id = scanner.nextLine();
+        printStream.print("Insert discount percentage: ");
+        int percentage = Integer.parseInt(scanner.nextLine());
+        if(percentage > 100){
+            printStream.println("Percentage cannot be more than 100%. Please enter your percentage again!");
+            printStream.print("Insert discount percentage: ");
+            percentage = Integer.parseInt(scanner.nextLine());
+        }
+        printStream.print("Insert the start of active date for your promotion in (YYYY-MM-DD) format: ");
+        Date startDate = Date.valueOf(scanner.nextLine());
+        printStream.print("Insert the end of active date for your promotion in (YYYY-MM-DD) format: ");
+        Date endDate = Date.valueOf(scanner.nextLine());
+        boolean result = this.controller.addPromotion(id, percentage, startDate, endDate);
+        if (result) printStream.println("Promotion is successfully added");
+        else printStream.println("Unable to add promotion");
     }
 
     private void performShowCart() {

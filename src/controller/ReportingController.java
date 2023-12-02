@@ -7,7 +7,7 @@ import model.Report;
 import java.io.PrintStream;
 import java.sql.*;
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.*;
 
 // Need to check
 
@@ -171,5 +171,92 @@ public class ReportingController extends Controller {
         );
         i++;
         return i;
+    }
+    // Product.price - Promotion.Discount * Product.price
+    public boolean addPromotion(String id, int percentage, Date startDate, Date endDate){
+        String productName = getProductName(id);
+        String statement = "INSERT INTO Promotion (productID, productName, startDate, endDate, discountPercentage) " +
+                "VALUES (" + convert(id) + ", " + convert(productName) +
+                ", TO_DATE(" + convert(String.valueOf(startDate)) + ", 'YYYY-MM-DD'), " +
+                "TO_DATE(" + convert(String.valueOf(endDate)) + ", 'YYYY-MM-DD'), " + percentage + ")";
+        printStream.println(statement);
+        try {
+            database.update(statement);
+            changePrice(id, -1);
+        } catch (SQLException e) {
+            database.abort();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean delete_promotion(String id){
+        String statement = sqlManager.getDeleteStatement("Promotion", "productID=" + id);
+        printStream.println(statement);
+        try {
+            for(Map.Entry<String, Double> entry : priceStore.entrySet()){
+                if(entry.getKey().equals(id)){
+                    changePrice(id, entry.getValue());
+                }
+            }
+            database.update(statement);
+        } catch (SQLException e) {
+            database.abort();
+            return false;
+        }
+        return true;
+    }
+
+    public int getDiscountPercentage(String id){
+        String statementForQuantityCheck = sqlManager.getSelectStatement(
+                "Promotion",
+                new String[] { "discountPercentage" }, "productID = " + id
+        );
+        try {
+            ResultSet result = database.query(statementForQuantityCheck);
+            if (result.next()) {
+                return result.getInt("discountPercentage");
+            }
+        } catch (SQLException ignored) { }
+        return 1;
+    }
+
+    public void changePrice(String id, double currPrice){
+        int currPercentage = getDiscountPercentage(id);
+        String statement = sqlManager.getSelectStatement(
+                new String[] {"Product", "Promotion"},
+                new String[]{"Product.price", "Product.productID" ,"Promotion.productID"},
+                "Promotion.productID = Product.productID"
+        );
+        printStream.println(statement);
+        try {
+           ResultSet resultSet = database.query(statement);
+           if(resultSet.next()) {
+               if (currPrice == -1) {
+                   double price = resultSet.getDouble("price");
+                   statement = sqlManager.getUpdateStatement(
+                           "Product",
+                           new String[]{"price"},
+                           new String[]{convert(String.valueOf(price - (price * currPercentage / 100)))},
+                           "productID=" + id
+                   );
+                   printStream.println(statement);
+                   database.update(statement);
+                   priceStore.put(id, price);
+               } else{
+                   statement = sqlManager.getUpdateStatement(
+                           "Product",
+                           new String[]{"price"},
+                           new String[]{convert(String.valueOf(currPrice))},
+                           "productID=" + id
+                   );
+                   printStream.println(statement);
+                   database.update(statement);
+                   priceStore.put(id, currPrice);
+               }
+           }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
