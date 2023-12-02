@@ -16,6 +16,7 @@ import java.util.Objects;
 public class ProductsController extends Controller {
 
     private Product product;
+    private Category category;
 
     public ProductsController(PrintStream printStream, Database database, SQLManager sqlManager) {
         super(printStream, database, sqlManager);
@@ -27,6 +28,10 @@ public class ProductsController extends Controller {
     public void setProduct(Product product){
         this.product = product;
     }
+    public void setCategory(Category category){
+        this.category=category;
+    }
+
 
     public boolean list() {
         String[] tables = new String[]{ "Product", "Category", "Admin" };
@@ -56,6 +61,32 @@ public class ProductsController extends Controller {
             }
             if (i == 0) {
                 printStream.println("No products to show");
+            }
+            results.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public boolean list_category() {
+        String[] tables = new String[]{  "Category" };
+        String[] fields = new String[]{
+                "Category.categoryId",
+                "Category.name AS categoryName",
+
+        };
+        String where = "Category.categoryId>0";
+        String statement = sqlManager.getSelectStatement(tables, fields, where);
+        printStream.println(statement);
+        try {
+            ResultSet results = database.query(statement);
+            int i = 0;
+            while (results.next()) {
+                String id = results.getString("categoryID");
+                i = printCategory(id, results, i);
+            }
+            if (i == 0) {
+                printStream.println("No category to show");
             }
             results.close();
         } catch (SQLException e) {
@@ -131,12 +162,40 @@ public class ProductsController extends Controller {
             return new Product(Integer.toString(id), name, description, price, brand, quantity,
                     supplier, warehouse, review, categoryId, adminId);
         } catch (SQLException e) {
+            printStream.println("Unable to add product since category doesn't exist. Please add the category first.");
+            database.abort();
+            throw new RuntimeException(e);
+        }
+    }
+    public Category add(String name, String categoryId) {
+        int id = getLastedCategoryID();
+        String statement = sqlManager.getInsertStatement(
+                "Category",
+                new String[] { "CategoryID", "name" },
+                new String[] { convert(Integer.toString(id)), convert(name) }
+        );
+        printStream.println(statement);
+        try {
+            database.update(statement);
+            return new Category(categoryId, name);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public boolean delete(String productID) {
         String statement = sqlManager.getDeleteStatement("Product", "productID=" + productID);
+        printStream.println(statement);
+        try {
+            database.update(statement);
+        } catch (SQLException e) {
+            database.abort();
+            return false;
+        }
+        return true;
+    }
+    public boolean delete_category(String categoryId) {
+        String statement = sqlManager.getDeleteStatement("Category", "CategoryId=" + categoryId);
         printStream.println(statement);
         try {
             database.update(statement);
@@ -246,7 +305,25 @@ public class ProductsController extends Controller {
             }
         } catch (SQLException ignored) { }
     }
-
+    public void show_category(String id) {
+        String[] tables = new String[]{ "Category"};
+        String[] fields = new String[]{
+                "Category.categoryId",
+                "Category.name AS categoryName",
+        };
+        String where = "Category.categoryId = " + id;
+        String statement = sqlManager.getSelectStatement(tables, fields, where);
+        try {
+            ResultSet results = database.query(statement);
+            int i = 0;
+            while (results.next()) {
+                i = printCategory(id, results, i);
+            }
+            if (i == 0) {
+                printStream.println("No category to show");
+            }
+        } catch (SQLException ignored) { }
+    }
     private int printProduct(String id, ResultSet results, int i) throws SQLException {
         String name = results.getString("productName");
         String description = results.getString("description");
@@ -264,6 +341,14 @@ public class ProductsController extends Controller {
         i++;
         return i;
     }
+    private int printCategory(String id, ResultSet results, int i) throws SQLException {
+        String name = results.getString("Categoryname");
+
+        String categoryID = results.getString("categoryID");
+        printStream.printf("\nName: %s\nID: %s\n\n", name, categoryID);
+        i++;
+        return i;
+    }
 
     public String getCategory(String name) {
         String statement = sqlManager.getSelectStatement("Category", new String[] { "categoryID" }, "name=" +  "'" + name + "'");
@@ -275,7 +360,10 @@ public class ProductsController extends Controller {
             } else {
                 return null;
             }
-        } catch (SQLException ignored) { }
+        } catch (SQLException ignored) {
+            printStream.println("Unable to add product since category doesn't exist. Please add the category first.");
+            database.abort();
+        }
         return null;
     }
 
@@ -285,6 +373,18 @@ public class ProductsController extends Controller {
             ResultSet results = database.query(statement);
             if (results.next()) {
                 return results.getInt("maxProductID") + 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 1;
+    }
+    private int getLastedCategoryID() {
+        String statement = "SELECT NVL(MAX(categoryID), 0) AS maxCategoryID FROM Category";
+        try {
+            ResultSet results = database.query(statement);
+            if (results.next()) {
+                return results.getInt("maxCategoryID") + 1;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

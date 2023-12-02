@@ -36,6 +36,8 @@ public class CommandParser {
             this.wrapWithAuth(this::performDeleteShippingAddress);
         } else if (command.isListProducts()) {
             this.wrapWithAuth(this::performList);
+        } else if (command.isListCategory()) {
+            this.wrapWithAuth(this::performList_Category);
         } else if (command.isSearchProducts()) {
             this.wrapWithAuth(this::performSearch);
         } else if (command.isAdminLogin()) {
@@ -44,10 +46,16 @@ public class CommandParser {
             this.wrapWithAdminAuth(this::performAddProduct);
         } else if (command.isUpdateProduct()) {
             this.wrapWithAuth(this::performUpdateProduct);
+        } else if (command.isAddCategory()) {
+            this.wrapWithAdminAuth(this::performAddCategory);
         } else if (command.isDeleteProduct()) {
-            this.wrapWithAuth(this::performDeleteProduct);
+            this.wrapWithAdminAuth(this::performDeleteProduct);
         } else if (command.isShowProduct()) {
             this.wrapWithAuth(this::performShowProduct);
+        } else if (command.isShowCategory()) {
+            this.wrapWithAuth(this::performShowCategory);
+        } else if (command.isDeleteCategory()) {
+            this.wrapWithAdminAuth(this::performDeleteCategory);
         } else if (command.isAddToCart()) {
             this.wrapWithAuth(this::performAddToCart);
         } else if (command.isShowCart()) {
@@ -179,6 +187,11 @@ public class CommandParser {
         if (result) printStream.println("Successfully listed products");
         else printStream.println("Unable to list products");
     }
+    private void performList_Category() {
+        boolean result = this.controller.listCategory();
+        if (result) printStream.println("Successfully listed Categories");
+        else printStream.println("Unable to list categories");
+    }
 
     private void performSearch() {
         String category = "", brand = "";
@@ -242,6 +255,14 @@ public class CommandParser {
         boolean result = this.controller.addProduct(name, description, price, brand, quantity, supplier, warehouse, review, categoryID);
         if (result) printStream.println("Successfully added product");
         else printStream.println("Unable to add product");
+    }
+    private void performAddCategory() {
+        printStream.print("Insert Category name: ");
+        String name = scanner.nextLine();
+
+        boolean result = this.controller.addCategory(name);
+        if (result) printStream.println("Successfully added category");
+        else printStream.println("Unable to add category ");
     }
 
     private void performUpdateProduct() {
@@ -312,11 +333,23 @@ public class CommandParser {
         if (result) printStream.println("Successfully deleted product with id: " + id);
         else printStream.println("Unable to delete product with id: " + id);
     }
+    private void performDeleteCategory() {
+        printStream.print("Insert category id: ");
+        String id = scanner.nextLine();
+        boolean result = this.controller.deleteCategory(id);
+        if (result) printStream.println("Successfully deleted category with id: " + id);
+        else printStream.println("Unable to delete category with id: " + id);
+    }
 
     private void performShowProduct() {
         printStream.print("Insert product id: ");
         String id = scanner.nextLine();
         this.controller.showProduct(id);
+    }
+    private void performShowCategory() {
+        printStream.print("Insert category id: ");
+        String id = scanner.nextLine();
+        this.controller.showCategory(id);
     }
 
     private void performAddToCart() {
@@ -404,6 +437,10 @@ public class CommandParser {
             System.out.println("16. show-cart");
             System.out.println("17. checkout");
             System.out.println("18. generate-report");
+            System.out.println("19. list-category");
+            System.out.println("20. add-category");
+            System.out.println("21. delete-category");
+            System.out.println("22. show-category");
         } else if (this.controller.isLogged()) {
             System.out.println(" Hello I am your personal assistant, here's a small guide for you  ");
             System.out.println("   ___");
@@ -419,11 +456,13 @@ public class CommandParser {
             System.out.println("4. add-shipping-addresses");
             System.out.println("5. delete-shipping-addresses");
             System.out.println("6. list-products");
-            System.out.println("7. search-product");
-            System.out.println("8. show-product");
-            System.out.println("9. add-to-cart");
-            System.out.println("10. show-cart");
-            System.out.println("11. checkout");
+            System.out.println("7. list-category");
+            System.out.println("8. search-product");
+            System.out.println("9. show-product");
+            System.out.println("10. show-category");
+            System.out.println("11. add-to-cart");
+            System.out.println("12. show-cart");
+            System.out.println("13. checkout");
         } else {
             System.out.println(" Hello I am your personal assistant, here's a small guide for you  ");
             System.out.println("   ___");

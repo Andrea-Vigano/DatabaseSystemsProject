@@ -2,6 +2,7 @@ package controller;
 
 import controller.database.Database;
 import controller.database.SQLManager;
+import model.Category;
 import model.Product;
 import model.User;
 
@@ -86,6 +87,9 @@ public class MainController extends Controller {
     public boolean listProducts() {
         return productsController.list();
     }
+    public boolean listCategory() {
+        return productsController.list_category();
+    }
 
     public boolean searchProducts(String category, String brand, double lowestPrice, double highestPrice) {
         return productsController.search(category, brand, lowestPrice, highestPrice);
@@ -93,6 +97,9 @@ public class MainController extends Controller {
 
     public void showProduct(String id) {
         productsController.show(id);
+    }
+    public void showCategory(String id) {
+        productsController.show_category(id);
     }
 
     public String getCategoryId(String name) {
@@ -117,6 +124,16 @@ public class MainController extends Controller {
         }
         return false;
     }
+    public boolean addCategory(
+            String name
+    ){
+        Category category = productsController.add(name, this.authenticationController.getAdminID());
+        if(category!= null){
+            productsController.setCategory(category);
+            return true;
+        }
+        return false;
+    }
 
     public boolean updateProduct(
             String productID,
@@ -137,6 +154,10 @@ public class MainController extends Controller {
     public boolean deleteProduct(String id) {
         return productsController.delete(id);
     }
+    public boolean deleteCategory(String id) {
+        return productsController.delete_category(id);
+    }
+
 
     public boolean isCartEmpty() {
         return cartController.isEmpty();
